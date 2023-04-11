@@ -16,7 +16,15 @@ DOCKER_OPT='--progress plain'
 REPO=repo.irsl.eiiris.tut.ac.jp/
 XEUS_IMG=${REPO}xeus:${UBUNTU_VER}
 BASE_IMG=${REPO}irsl_base:${ROS_DISTRO_}_nvidia
-TARGET_IMG=${REPO}irsl_system:${ROS_DISTRO_}
+DEFAULT_IMG=${REPO}irsl_system:${ROS_DISTRO_}
+
+TARGET_IMG=${1:-${DEFAULT_IMG}}
+
+if [ -n ${NO_CACHE} ]; then
+    DOCKER_OPT="--no-cache ${DOCKER_OPT}"
+fi
+
+echo "Build Image: ${TARGET_IMG}"
 
 docker build . ${DOCKER_OPT} -f Dockerfile.add_xeus     --build-arg BASE_IMAGE=${BASE_IMG} --build-arg BUILD_IMAGE=${XEUS_IMG} -t build_temp/build_system:0
 
