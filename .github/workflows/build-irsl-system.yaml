@@ -37,6 +37,8 @@ jobs:
     env:
       IMAGE_NAME: irsl_system
       DOCKER_DEPLOY: repo.irsl.eiiris.tut.ac.jp/
+      IMAGE_TAG: ${{ inputs.hash }}
+      IMAGE_SRC: ${{ inputs.source }}
     steps:
       - name: workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
@@ -52,6 +54,14 @@ jobs:
           else
             echo "ROS_DISTRO=none" >> $GITHUB_ENV
           fi
+      - name: Naming (Overwrite env)
+        run: |
+          if  [ -z "${IMAGE_TAG}" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+          fi
+          if  [ -z "${IMAGE_SRC}" ]; then
+            echo "IMAGE_SRC=${{ github.event_name }}" >> $GITHUB_ENV
+          fi
       - name: Check out repository code(src)
         uses: actions/checkout@v3
         with:
@@ -60,14 +70,14 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           NO_CACHE: 'YES'
-        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${{ inputs.source }}:${{ inputs.hash }}
+        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Build (cached)
         if: github.event_name != 'workflow_dispatch'
         env:
           NO_CACHE: ''
-        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${{ inputs.source }}:${{ inputs.hash }}
+        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Deploy
         if: github.event_name != 'pull_request'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${{ inputs.source }}:${{ inputs.hash }} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
