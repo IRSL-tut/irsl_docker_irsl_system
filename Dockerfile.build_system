@@ -22,7 +22,8 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
     wstool set choreonoid_ros https://github.com/choreonoid/choreonoid_ros.git -y -t src --git && \
     wstool update -t src && \
-    patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch
+    patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
+    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
 
 ## add robot_assembler
 RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
