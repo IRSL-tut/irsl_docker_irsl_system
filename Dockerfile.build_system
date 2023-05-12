@@ -17,10 +17,14 @@ RUN apt update -q -qq && \
     rm -rf /var/lib/apt/lists/
 
 ### install choreonoid
+##https://github.com/choreonoid/choreonoid_ros.git
+## compile failed, refere commits below
+## https://github.com/choreonoid/choreonoid/commit/5a1dbbfad83f9bc677761c3915e5a4614d559183
+## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
 WORKDIR /choreonoid_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
-    wstool set choreonoid_ros https://github.com/choreonoid/choreonoid_ros.git -y -t src --git && \
+    wstool set choreonoid_ros https://github.com/IRSL-tut/choreonoid_ros.git -v stable_irsl -y -t src --git && \
     wstool update -t src && \
     patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
