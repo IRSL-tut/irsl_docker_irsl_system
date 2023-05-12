@@ -62,10 +62,14 @@ jobs:
           if  [ -z "${IMAGE_SRC}" ]; then
             echo "IMAGE_SRC=${{ github.event_name }}" >> $GITHUB_ENV
           fi
-      - name: Check out repository code(src)
+      - name: Check out repository code(src, dispatch)
+        if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v3
         with:
           ref: 'irsl_system'
+      - name: Check out repository code(src)
+        if: github.event_name != 'workflow_dispatch'
+        uses: actions/checkout@v3
       - name: Build (no cache)
         if: github.event_name == 'workflow_dispatch'
         env:
