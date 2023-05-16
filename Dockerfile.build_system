@@ -25,6 +25,7 @@ WORKDIR /choreonoid_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
     wstool set choreonoid_ros https://github.com/IRSL-tut/choreonoid_ros.git -v stable_irsl -y -t src --git && \
+    wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -y -t src --git && \
     wstool update -t src && \
     patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
@@ -50,7 +51,7 @@ RUN apt update -q -qq && \
 # RUN python3 -m pip install --upgrade pip && \
 #     python3 -m pip install ipython jedi jupyterlab jupyter-console
 
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
 ### ADD entry point
 ## jupyter lab --no-browser --port=8888 --ip=0.0.0.0 --NotebookApp.token='' --allow-root
 
