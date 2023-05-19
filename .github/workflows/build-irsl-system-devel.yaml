@@ -1,0 +1,78 @@
+name: Build IRSL system Devel
+#run-name: "${{ github.actor }} / ${{ github.event_name }} / ${{ inputs.event_type }} / ${{ inputs.source }} / ${{ inputs.hash }}"
+#
+on:
+  workflow_dispatch:
+    inputs:
+      event_type:
+        required: false
+        default: 'default'
+        type: string
+      source:
+        required: false
+        default: 'default'
+        type: string
+      hash:
+        required: false
+        default: 'default'
+        type: string
+  push:
+    branches: [ devel ]
+  pull_request:
+    branches: [ devel ]
+#  schedule:
+#    - cron: '30 2 * * 2,6'
+## source
+### jupyter_plugin
+### robot_assembler_plugin
+### irsl_choreonoid
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        #ubuntu: [ 20.04, 22.04]
+        ubuntu: [ 20.04 ]
+    runs-on: self-hosted
+    env:
+      IMAGE_NAME: irsl_system
+      DOCKER_DEPLOY: repo.irsl.eiiris.tut.ac.jp/
+      IMAGE_TAG: ${{ inputs.hash }}
+      IMAGE_SRC: ${{ inputs.source }}
+    steps:
+      - name: workflow_dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "workflow_dispatch ${{ inputs.event_type }} from ${{ inputs.source }} ${{ inputs.hash }}"
+      - name: Check Version
+        run: |
+          if   [ ${{ matrix.ubuntu }} == 22.04 ]; then
+            echo "ROS_DISTRO=humble" >> $GITHUB_ENV
+          elif [ ${{ matrix.ubuntu }} == 20.04 ]; then
+            echo "ROS_DISTRO=noetic" >> $GITHUB_ENV
+          elif [ ${{ matrix.ubuntu }} == 18.04 ]; then
+            echo "ROS_DISTRO=melodic" >> $GITHUB_ENV
+          else
+            echo "ROS_DISTRO=none" >> $GITHUB_ENV
+          fi
+      - name: Naming (Overwrite env)
+        run: |
+          if  [ -z "${IMAGE_TAG}" ]; then
+            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+          fi
+          if  [ -z "${IMAGE_SRC}" ]; then
+            echo "IMAGE_SRC=${{ github.event_name }}" >> $GITHUB_ENV
+          fi
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Build Devel
+        if: github.event_name != 'pull_request'
+        env:
+          NO_CACHE: 'YES'
+          BUILD_ROS: ${{ env.ROS_DISTRO }}
+          BUILD_DEVEL: 'YES'
+        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}_devel
+      - name: Deploy Devel
+        if: github.event_name != 'pull_request'
+        run: |
+          docker tag  actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}_devel ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
