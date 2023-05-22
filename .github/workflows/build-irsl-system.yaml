@@ -17,9 +17,9 @@ on:
         default: 'default'
         type: string
   push:
-    branches: [ main ]
+    branches: [ main, devel ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, devel ]
 #  schedule:
 #    - cron: '30 2 * * 2,6'
 ## source
@@ -54,22 +54,26 @@ jobs:
           else
             echo "ROS_DISTRO=none" >> $GITHUB_ENV
           fi
+      - name: Build Type
+        if: inputs.event_type == 'build_devel' || github.ref_name == 'devel'
+        run: echo "BUILD_DEVEL=devel" >> $GITHUB_ENV
       - name: Naming (Overwrite env)
         run: |
           if  [ -z "${IMAGE_TAG}" ]; then
-            echo "IMAGE_TAG=latest" >> $GITHUB_ENV
+            echo "IMAGE_TAG=latest${{env.BUILD_DEVEL}}" >> $GITHUB_ENV
           fi
           if  [ -z "${IMAGE_SRC}" ]; then
-            echo "IMAGE_SRC=${{ github.event_name }}" >> $GITHUB_ENV
+            echo "IMAGE_SRC=${{ github.event_name }}${{env.BUILD_DEVEL}}" >> $GITHUB_ENV
           fi
-      - name: Check out repository code(src, dispatch)
-        if: github.event_name == 'workflow_dispatch'
-        uses: actions/checkout@v3
-      - name: Check out repository code(src)
-        if: github.event_name != 'workflow_dispatch'
+      - name: DebugMessage
+        run: |
+          echo "ref: ${{github.ref}} / repo: ${{github.repository}} / ref_nm: ${{github.ref_name}} / head_ref: ${{github.head_ref}}"
+          echo "ros: ${ROS_DISTRO} / build: ${BUILD_DEVEL} / tag: ${IMAGE_TAG} / src: ${IMAGE_SRC}"
+          echo "env: ${{ env.BUILD_DEVEL }}"
+      - name: Check out repository
         uses: actions/checkout@v3
       - name: Build (no cache)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.event_type != 'build_devel'
         env:
           NO_CACHE: 'YES'
           BUILD_ROS: ${{ env.ROS_DISTRO }}
@@ -81,7 +85,12 @@ jobs:
           BUILD_ROS: ${{ env.ROS_DISTRO }}
         run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Deploy
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
           docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+      - name: Deploy (Devel)
+        if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
+        run: |
+          docker tag actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
