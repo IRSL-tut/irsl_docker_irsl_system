@@ -40,6 +40,8 @@ jobs:
       IMAGE_TAG: ${{ inputs.hash }}
       IMAGE_SRC: ${{ inputs.source }}
     steps:
+      - name: test
+        run: echo "${{github.ref}} / ${{github.repository}} / ${{github.ref_name}} / ${{github.head_ref}} / ${{github.event}}"
       - name: workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
         run: echo "workflow_dispatch ${{ inputs.event_type }} from ${{ inputs.source }} ${{ inputs.hash }}"
