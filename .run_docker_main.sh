@@ -31,7 +31,7 @@ DOCKER_ENVIRONMENT_VAR=""
 ##xhost +local:root
 xhost +si:localuser:root
 
-docker rm ${cname}
+rmimage=$(docker rm ${cname})
 
 docker run \
     --privileged     \
@@ -39,9 +39,11 @@ docker run \
     ${GPU_OPT}       \
     ${NET_OPT}       \
     ${DOCKER_ENVIRONMENT_VAR} \
-    --env="DOCKER_ROS_SETUP=/catkin_ws/devel/setup.bash" \
+    --env="DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash" \
     --env="ROS_IP=localhost" \
     --env="ROS_MASTER_URI=http://localhost:11311" \
+    --env="JUPYTER_PATH=/choreonoid_ws/install/share/choreonoid-1.8/jupyter" \
+    --env="PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-1.8/python" \
     --env="DISPLAY"  \
     --env="QT_X11_NO_MITSHM=1" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
