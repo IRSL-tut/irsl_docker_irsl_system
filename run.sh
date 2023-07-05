@@ -9,6 +9,7 @@ USE_JUPYTER=""
 WORK_DIR=${abs_dir}/userdir
 JUPYTER_PORT="8888"
 VERBOSE=""
+CONTAINER_NAME="docker_irsl_system"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -24,6 +25,19 @@ while [[ $# -gt 0 ]]; do
         -w|--workspace)
             WORK_DIR="$2"
             shift
+            shift
+            ;;
+        -N|--name)
+            CONTAINER_NAME="$2"
+            shift
+            shift
+            ;;
+        -G|--no-gpu)
+            _NO_GPU="yes"
+            shift
+            ;;
+        -U|--user)
+            _USE_USER="yes"
             shift
             ;;
 #        -C|--console)
@@ -102,8 +116,11 @@ fi
 
 echo "image: $dimage"
 echo "args: $cur_var"
+DOCKER_CONTAINER=$CONTAINER_NAME \
 DOCKER_IMAGE=$dimage \
 MOUNTED_DIR=$WORK_DIR \
 OPT=$OPT \
+NO_GPU=$_NO_GPU \
+USE_USER=$_USE_USER \
 ${abs_dir}/.run_docker_main.sh \
 ${cur_var}

@@ -6,17 +6,17 @@ cname=${DOCKER_CONTAINER:-"docker_irsl_system"} ## name of container (should be 
 DEFAULT_USER_DIR="$(pwd)"
 mtdir=${MOUNTED_DIR:-$DEFAULT_USER_DIR}
 
-
 VAR=${@:-"bash"}
 if [ $# -eq 0 -a -z "$OPT" ]; then
     OPT=-it
 fi
 
-if [ "$NO_GPU" = "" ]; then
+if [ -z "$NO_GPU" ]; then
     GPU_OPT='--gpus all,"capabilities=compute,graphics,utility,display"'
 else
     GPU_OPT=""
 fi
+#echo "GPU_OPT: $GPU_OPT"
 
 ## --net=mynetworkname
 ## docker inspect -f '{{.NetworkSettings.Networks.mynetworkname.IPAddress}}' container_name
@@ -28,6 +28,10 @@ NET_OPT="--net=host"
 
 DOCKER_ENVIRONMENT_VAR=""
 
+if [ -n "$USE_USER" ]; then
+    USER_SETTING=" -u $(id -u):$(id -g) -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro"
+fi
+
 ##xhost +local:root
 xhost +si:localuser:root
 
@@ -38,6 +42,7 @@ docker run \
     ${OPT}           \
     ${GPU_OPT}       \
     ${NET_OPT}       \
+    ${USER_SETTING}  \
     ${DOCKER_ENVIRONMENT_VAR} \
     --env="DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash" \
     --env="ROS_IP=localhost" \
