@@ -5,4 +5,4 @@ JUPYTER_PORT=${1:-8888}
 
 source /choreonoid_ws/install/setup.bash
 
-jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --NotebookApp.token=''
+jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --ServerApp.token=''
