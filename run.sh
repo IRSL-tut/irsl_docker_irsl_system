@@ -8,6 +8,7 @@ USE_CONSOLE=""
 USE_JUPYTER=""
 WORK_DIR=${abs_dir}/userdir
 JUPYTER_PORT="8888"
+JUPYTER_DIR=/userdir
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
 
@@ -44,10 +45,11 @@ while [[ $# -gt 0 ]]; do
 #            USE_CONSOLE="yes"
 #            shift
 #            ;;
-#        -J|--jupyter)
-#            USE_JUPYTER="yes"
-#            shift
-#            ;;
+        -j|--jupyter-dir)
+            JUPYTER_DIR="$2"
+            shift
+            shift
+            ;;
         -v|--verbose)
             VERBOSE="--verbose"
             shift
@@ -102,7 +104,7 @@ elif [ "${PROG}" == "assembler" ]; then
     RADIR=/choreonoid_ws/install/share/choreonoid-1.8/robot_assembler
     cur_var="-- choreonoid $RADIR/layout/assembler.cnoid --assembler $RADIR/irsl/irsl_assembler_config.yaml --original-project $RADIR/layout/original.cnoid"
 elif [ "${PROG}" == "jupyter" ]; then
-    cur_var="-- jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --NotebookApp.token=''"
+    cur_var="-- jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --notebook-dir=${JUPYTER_DIR} --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''"
 elif [ "${PROG}" == "choreonoid-console" ]; then
     OPT="-it"
     cur_var="-- jupyter console --kernel=Choreonoid"
