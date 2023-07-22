@@ -8,7 +8,17 @@ ARG UBUNTU_VER=18.04
 LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
 SHELL ["/bin/bash", "-c"]
+
+# https://qiita.com/haessal/items/0a83fe9fa1ac00ed5ee9
+ENV DEBCONF_NOWARNINGS=yes
+# https://qiita.com/yagince/items/deba267f789604643bab
 ENV DEBIAN_FRONTEND=noninteractive
+# https://qiita.com/jacob_327/items/e99ca1cf8167d4c1486d
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+### speedup download
+# https://genzouw.com/entry/2019/09/04/085135/1718/
+RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.list
 
 ###
 RUN apt update -q -qq && \
