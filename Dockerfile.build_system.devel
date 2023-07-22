@@ -24,9 +24,9 @@ RUN apt update -q -qq && \
 WORKDIR /choreonoid_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
-    wstool set choreonoid --version-new devel -y -t src && \
-    wstool set choreonoid_ros https://github.com/IRSL-tut/choreonoid_ros.git -v devel -y -t src --git && \
-    wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -v devel -y -t src --git && \
+    wstool set choreonoid                                                              -y -t src --version-new devel && \
+    wstool set choreonoid_ros      https://github.com/IRSL-tut/choreonoid_ros.git      -y -t src -v devel --git && \
+    wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -y -t src -v devel --git && \
     wstool update -t src && \
     patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
