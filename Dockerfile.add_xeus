@@ -1,22 +1,49 @@
 ARG BUILD_IMAGE=ubuntu:20.04
 ARG BASE_IMAGE=ubuntu:20.04
+ARG UBUNTU_VER=18.04
 
 FROM ${BUILD_IMAGE} as builder
 ## do nothing
 
 FROM ${BASE_IMAGE}
 
+ARG UBUNTU_VER
+
 LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
 SHELL ["/bin/bash", "-c"]
-ENV DEBIAN_FRONTEND=noninteractive
 
+# https://qiita.com/haessal/items/0a83fe9fa1ac00ed5ee9
+ENV DEBCONF_NOWARNINGS=yes
+# https://qiita.com/yagince/items/deba267f789604643bab
+ENV DEBIAN_FRONTEND=noninteractive
+# https://qiita.com/jacob_327/items/e99ca1cf8167d4c1486d
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+### speedup download
+# https://genzouw.com/entry/2019/09/04/085135/1718/
+RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.list
+
+###
 RUN apt update -q -qq && \
-    apt install -q -qq -y libssl-dev openssl cmake g++ pkg-config git uuid-dev libsodium-dev && \
+    apt install -q -qq -y curl libssl-dev openssl cmake g++ pkg-config git uuid-dev libsodium-dev && \
+    bash <(curl -s https://raw.githubusercontent.com/choreonoid/choreonoid/master/misc/script/install-requisites-ubuntu-20.04.sh) && \
+    apt install -q -qq -y ros-${ROS_DISTRO}-xacro \
+    ros-${ROS_DISTRO}-cv-bridge                   \
+    ros-${ROS_DISTRO}-ros-controllers             \
+    ros-${ROS_DISTRO}-robot-state-publisher       \
+    ros-${ROS_DISTRO}-smach-ros                   \
+    ros-${ROS_DISTRO}-smach-viewer                \
+    ros-${ROS_DISTRO}-qt-dotgraph                 \
+    ros-${ROS_DISTRO}-image-transport             \
+    ros-${ROS_DISTRO}-angles                      \
+    ros-${ROS_DISTRO}-controller-manager          \
+    ros-${ROS_DISTRO}-hardware-interface          \
+    ros-${ROS_DISTRO}-joint-limits-interface      \
+    ros-${ROS_DISTRO}-transmission-interface      \
+    ros-${ROS_DISTRO}-urdf python3-pygraphviz && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
-
-COPY --from=builder /opt/xeus /opt/xeus
 
 RUN apt update -q -qq && \
     apt install -q -qq -y python3-pip && \
@@ -24,6 +51,9 @@ RUN apt update -q -qq && \
     rm -rf /var/lib/apt/lists/ && \
     python3 -m pip install --upgrade pip && \
     python3 -m pip install ipython jedi jupyterlab jupyter-console
+
+### cache may be ignored after here
+COPY --from=builder /opt/xeus /opt/xeus
 
 ENV PATH=$PATH:/opt/xeus/bin
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/xeus/lib

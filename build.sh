@@ -32,6 +32,10 @@ fi
 
 echo "Build Image: ${TARGET_IMG}"
 
-docker build . ${DOCKER_OPT} -f Dockerfile.add_xeus  --build-arg BASE_IMAGE=${BASE_IMG} --build-arg BUILD_IMAGE=${XEUS_IMG} -t build_temp/build_system:0
+docker build . --progress=plain --pull -f Dockerfile.add_xeus  \
+       --build-arg BASE_IMAGE=${BASE_IMG} --build-arg BUILD_IMAGE=${XEUS_IMG} --build-arg UBUNTU_VER=${UBUNTU_VER} \
+       -t build_temp/build_system:0
 
-docker build . ${DOCKER_OPT} -f ${DOCKER_FILE}       --build-arg BASE_IMAGE=build_temp/build_system:0 --build-arg UBUNTU_VER=${UBUNTU_VER} -t ${TARGET_IMG}
+docker build . ${DOCKER_OPT} -f ${DOCKER_FILE} --build-arg UBUNTU_VER=${UBUNTU_VER} \
+       --build-arg BASE_IMAGE=build_temp/build_system:0 \
+       -t ${TARGET_IMG}
