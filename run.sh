@@ -11,6 +11,7 @@ JUPYTER_PORT="8888"
 JUPYTER_DIR=/userdir
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
+OPT=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -39,6 +40,10 @@ while [[ $# -gt 0 ]]; do
             ;;
         -U|--user)
             _USE_USER="yes"
+            shift
+            ;;
+        -it)
+            OPT="$OPT -it"
             shift
             ;;
 #        -C|--console)
@@ -96,24 +101,25 @@ if [ -n "${USE_DEVEL}" ]; then
 fi
 
 ### parse program
-OPT=""
 cur_var=""
 if [ "${PROG}" == "choreonoid" ]; then
-    cur_var="-- choreonoid $*"
+    cur_var="choreonoid $*"
 elif [ "${PROG}" == "assembler" ]; then
     RADIR=/choreonoid_ws/install/share/choreonoid-1.8/robot_assembler
-    cur_var="-- choreonoid $RADIR/layout/assembler.cnoid --assembler $RADIR/irsl/irsl_assembler_config.yaml --original-project $RADIR/layout/original.cnoid"
+    cur_var="choreonoid $RADIR/layout/assembler.cnoid --assembler $RADIR/irsl/irsl_assembler_config.yaml --original-project $RADIR/layout/original.cnoid"
 elif [ "${PROG}" == "jupyter" ]; then
-    cur_var="-- jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --notebook-dir=${JUPYTER_DIR} --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''"
+    cur_var="jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --notebook-dir=${JUPYTER_DIR} --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''"
 elif [ "${PROG}" == "choreonoid-console" ]; then
-    OPT="-it"
-    cur_var="-- jupyter console --kernel=Choreonoid"
+    OPT="$OPT -it"
+    cur_var="jupyter console --kernel=Choreonoid"
 elif [ "${PROG}" == "python" ]; then
-    OPT="-it"
-    cur_var="-- python3 $*"
+    OPT="$OPT -it"
+    cur_var="python3 $*"
 elif [ "${PROG}" == "ipython" ]; then
     OPT="-it"
-    cur_var="-- ipython $*"
+    cur_var="ipython $*"
+elif [ -n "${PROG}" ]; then
+    cur_var="${PROG} $*"
 fi
 
 echo "image: $dimage"
