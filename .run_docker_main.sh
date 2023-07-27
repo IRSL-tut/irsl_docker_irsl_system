@@ -55,7 +55,7 @@ docker run \
     --name=${cname} \
     --volume="${mtdir}:/userdir" \
     -w="/userdir" \
-    ${iname} \
+    -- ${iname} \
     ${VAR}
 
 ##xhost -local:root

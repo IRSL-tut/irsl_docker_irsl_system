@@ -3,6 +3,8 @@
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
 EXEC_OPTION=
+PROG="/irsl_entrypoint.sh"
+
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -18,6 +20,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         -U|--user)
             EXEC_OPTION="$EXEC_OPTION --user $(id -u):$(id -g)"
+            shift
+            ;;
+        -it)
+            EXEC_OPTION="$EXEC_OPTION -it"
+            shift
+            ;;
+        --no-ros|--NO_ROS)
+            PROG=
             shift
             ;;
         -v|--verbose)
@@ -54,9 +64,12 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 
 ### program
-PROG=""
-if [ $# -gt 0 ]; then
-    docker exec $EXEC_OPTION $CONTAINER_NAME $@
+if [ "$1" == "bash" -a "$2" == "-c" ]; then
+    shift
+    shift
+    docker exec $EXEC_OPTION -- $CONTAINER_NAME $PROG bash -c "$*"
+elif [ $# -gt 0 ]; then
+    docker exec $EXEC_OPTION -- $CONTAINER_NAME $PROG "$@"
 else
-    docker exec -it $EXEC_OPTION $CONTAINER_NAME bash
+    docker exec -it $EXEC_OPTION $CONTAINER_NAME $PROG bash
 fi
