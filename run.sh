@@ -12,6 +12,8 @@ JUPYTER_DIR=/userdir
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
 OPT=""
+_PULL=""
+_REPO="repo.irsl.eiiris.tut.ac.jp/"
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -44,6 +46,14 @@ while [[ $# -gt 0 ]]; do
             ;;
         -it)
             OPT="$OPT -it"
+            shift
+            ;;
+        -H|--hub)
+            _REPO="irslrepo/"
+            shift
+            ;;
+        --pull)
+            _PULL="yes"
             shift
             ;;
 #        -C|--console)
@@ -95,9 +105,13 @@ if [ $# -gt 0 ]; then
 fi
 
 ### devel
-dimage="repo.irsl.eiiris.tut.ac.jp/irsl_system:noetic"
+dimage="${_REPO}irsl_system:noetic"
 if [ -n "${USE_DEVEL}" ]; then
-    dimage="repo.irsl.eiiris.tut.ac.jp/irsl_system_devel:noetic"
+    dimage="${_REPO}irsl_system_devel:noetic"
+fi
+
+if [ -n "${_PULL}" ]; then
+    docker pull ${dimage}
 fi
 
 ### parse program
