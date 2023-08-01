@@ -37,6 +37,7 @@ jobs:
     env:
       IMAGE_NAME: irsl_system
       DOCKER_DEPLOY: repo.irsl.eiiris.tut.ac.jp/
+      DOCKER_HUB: irslrepo/
       IMAGE_TAG: ${{ inputs.hash }}
       IMAGE_SRC: ${{ inputs.source }}
     steps:
@@ -98,3 +99,19 @@ jobs:
         run: |
           docker tag actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+      - name: Log in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PASS }}
+      - name: Deploy(HUB)
+        if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
+        run: |
+          docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+      - name: Deploy(HUB, devel)
+        if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
+        run: |
+          docker tag actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
