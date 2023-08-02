@@ -1,0 +1,79 @@
+# create /choreonoid_ws
+# choreonoid_ws: choreonoid
+# docker buildx build -f Dockerfile.build_system.arm --platform linux/arm64 --progress=plain -t irsl_system:arm64 -o type=docker .
+ARG BASE_IMAGE=ros:noetic-ros-base
+FROM ${BASE_IMAGE}
+
+ARG UBUNTU_VER=20.04
+
+LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
+
+SHELL ["/bin/bash", "-c"]
+
+# https://qiita.com/haessal/items/0a83fe9fa1ac00ed5ee9
+ENV DEBCONF_NOWARNINGS=yes
+# https://qiita.com/yagince/items/deba267f789604643bab
+ENV DEBIAN_FRONTEND=noninteractive
+# https://qiita.com/jacob_327/items/e99ca1cf8167d4c1486d
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+
+### speedup download
+# https://genzouw.com/entry/2019/09/04/085135/1718/
+# RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.list
+
+###
+RUN apt update -q -qq && \
+    apt install -q -qq -y curl wget git && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
+
+### install choreonoid
+##https://github.com/choreonoid/choreonoid_ros.git
+## compile failed, refere commits below
+## https://github.com/choreonoid/choreonoid/commit/5a1dbbfad83f9bc677761c3915e5a4614d559183
+## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
+WORKDIR /choreonoid_ws
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
+    wstool set choreonoid_ros      https://github.com/IRSL-tut/choreonoid_ros.git      -y -t src -v stable --git && \
+    wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -y -t src           --git && \
+    wstool update -t src && \
+    patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
+    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
+
+## add robot_assembler
+#RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
+## add jupyter_plugin
+#RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
+
+RUN apt update -q -qq && \
+    src/choreonoid/misc/script/install-requisites-ubuntu-${UBUNTU_VER}.sh && \
+    if [ "$ROS_DISTRO" = "noetic" ]; then \
+    apt install -q -qq -y python3-catkin-tools libreadline-dev ipython3; \
+    else \
+    apt install -q -qq -y python-catkin-tools libreadline-dev ipython3; fi && \
+    rosdep update -y -q -r && \
+    rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
+
+# RUN python3 -m pip install --upgrade pip && \
+#     python3 -m pip install ipython jedi jupyterlab jupyter-console
+
+# COPY files/opcode_arch64.patch .
+# RUN patch -d src/choreonoid -p1 < opcode_arch64.patch
+# RUN echo | gcc -dM -E -
+### FIX
+sed -i -e 's@\(#if defined(__x86_64) || defined(_WIN64)\)@\1 || defined(__aarch64__)@g' src/choreonoid/src/AISTCollisionDetector/Opcode/OPC_OptimizedTree.cpp
+
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
+### ADD entry point
+## jupyter lab --no-browser --port=8888 --ip=0.0.0.0 --NotebookApp.token='' --allow-root
+
+### [HOTFIX]
+#RUN if [ -e /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/irsl ]; then  rm -rf /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/irsl; fi && \
+#    git clone https://github.com/IRSL-tut/robot_assembler_config_IRSL.git /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/irsl
+
+###
+# docker buildx build -f Dockerfile.build_system.arm --platform linux/arm64 --progress=plain -t irsl_system:arm64 -o type=docker .
+###
