@@ -1,0 +1,9 @@
+{
+    "display_name": "Robot Programming",
+    "argv": [
+        "jupyter_process.sh",
+        "roboprog",
+        "{connection_file}"
+    ],
+    "language": "python"
+}

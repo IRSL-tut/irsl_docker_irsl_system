@@ -1,0 +1,36 @@
+version: "3.0"
+services:
+  xserver:
+    image: irslrepo/browser_vnc:20.04
+    # ipc: host
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "9999:80"
+    command: [ supervisord, -c, /app/supervisord.conf ]
+    environment:
+      - DISPLAY=:10
+    healthcheck:
+      test: ["CMD-SHELL", "test -e /tmp/.X11-unix/X10"]
+      interval: "1s"
+      retries: 20
+    volumes:
+      - '~/docker_tmp/.X11-unix:/tmp/.X11-unix'
+  main:
+    image: irslrepo/irsl_system:noetic
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "8888:8888"
+    command: [ "jupyter", "lab", "--allow-root", "--no-browser", "--ip=0.0.0.0", "--port=8888", "--ServerApp.token=''", "--FileCheckpoints.checkpoint_dir=/tmp" ]
+    environment:
+      - DISPLAY=:10
+      - DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash
+      - ROS_IP=localhost
+      - ROS_MASTER_URI=http://localhost:11311
+    working_dir: /userdir
+    volumes:
+      - '~/docker_tmp:/userdir'
+      - '~/docker_tmp/.X11-unix:/tmp/.X11-unix'
+    depends_on:
+      - xserver

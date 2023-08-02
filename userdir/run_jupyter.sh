@@ -2,7 +2,11 @@
 
 JUPYTER_PORT=${1:-8888}
 # echo "port: ${JUPYTER_PORT}"
+_NOTE_DIR=
+if [ -n "$1" ]; then
+    _NOTE_DIR="--notebook-dir=$1"
+fi
 
 source /choreonoid_ws/install/setup.bash
 
-jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --ServerApp.token=''
+jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} ${_NOTE_DIR} --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''

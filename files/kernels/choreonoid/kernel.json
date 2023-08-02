@@ -1,0 +1,9 @@
+{
+    "display_name": "Choreonoid",
+    "argv": [
+        "jupyter_process.sh",
+        "choreonoid",
+        "{connection_file}"
+    ],
+    "language": "python"
+}
