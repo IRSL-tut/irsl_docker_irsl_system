@@ -144,5 +144,5 @@ MOUNTED_DIR=$WORK_DIR \
 OPT=$OPT \
 NO_GPU=$_NO_GPU \
 USE_USER=$_USE_USER \
-${abs_dir}/.run_docker_main.sh \
+${abs_dir}/files/run_docker_main.sh \
 ${cur_var}
