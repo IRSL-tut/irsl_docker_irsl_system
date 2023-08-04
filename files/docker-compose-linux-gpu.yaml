@@ -25,7 +25,7 @@ services:
       interval: "2s"
       retries: 20
     volumes:
-      - 'tmpdir:/tmp/.X11-unix'
+      - '/tmp/.X11-unix:/tmp/.X11-unix'
   main:
     image: ${REPO:-irslrepo/}irsl_system:noetic
     security_opt:
@@ -35,14 +35,19 @@ services:
     command: [ "jupyter", "lab", "--allow-root", "--no-browser", "--ip=0.0.0.0", "--port=8888", "--ServerApp.token='${JUPYTER_TOKEN}'", "--FileCheckpoints.checkpoint_dir=/tmp" ]
     environment:
       - DISPLAY=:${DOCKER_DISPLAY:-10}
+      - VGL_DISPLAY=${VGL_DISPLAY-:0}
       - DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash
       - ROS_IP=localhost
       - ROS_MASTER_URI=http://localhost:11311
     working_dir: /userdir
+    user: "${DOCKER_USER:-0}:${DOCKER_GROUP:-0}"
     volumes:
       - '${USER_DIR:-~/docker_userdir}:/userdir'
-      - 'tmpdir:/tmp/.X11-unix'
+      - '/tmp/.X11-unix:/tmp/.X11-unix'
     depends_on:
       - xserver
-volumes:
-  tmpdir:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu, compute, graphics, utility, display]
