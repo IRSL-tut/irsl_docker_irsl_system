@@ -6,7 +6,8 @@ version: "3.0"
 # VNC_PORT     = 9999 ## port of browser_vnc
 # JUPYTER_PORT = 8888 ## port of jupyter
 # JUPYTER_TOKEN = ''  ## token (password) to login jupyter
-# DOCKER_DISPLAY=10
+# DOCKER_DISPLAY = 10
+# VGL_DISPLAY    = :0
 # REPO=irslrepo/
 ###
 services:
