@@ -2,14 +2,41 @@
 
 ## Using on browser
 
+### Preparing
 - Install docker (linux, windows-wol) or docker-destkop (windows)
-
 - Download a file for docker compose
+  - Linux, Windows-WOL
+    - https://github.com/IRSL-tut/irsl_docker_irsl_system/raw/main/files/docker-compose-linux.yaml
+  - Linux with GPU(nvidia and using nvidia-docker)
+    - https://github.com/IRSL-tut/irsl_docker_irsl_system/raw/main/files/docker-compose-linux-gpu.yaml
+  - Windows(Docker-desktop)
+    - https://github.com/IRSL-tut/irsl_docker_irsl_system/raw/main/files/docker-compose-win.yaml
 
-- RUN
+### Run
 
 ```bash
 docker compose -f <downloaded-compose>.yaml [ -p name ] up
+```
+  - Access Jupyter
+    - http://localhost:8888
+  - Access Window
+    - http://localhost:9999/code.html
+
+- Arguments (using environment variables)
+  - USER_DIR=~/docker_userdir
+  - DOCKER_USER  = 0 # not working on windows(docker-desktop)
+  - DOCKER_GROUP = 0 # not working on windows(docker-desktop)
+  - VNC_PORT     = 9999 # port number of browser_vnc
+  - JUPYTER_PORT = 8888 # port number of jupyter
+  - JUPYTER_TOKEN = ''  # token (password) to login jupyter
+  - DOCKER_DISPLAY = 10 #internal use
+  - VGL_DISPLAY    = :0 #GPU only
+  - REPO=irslrepo/
+ 
+- Example
+  - Changing VNC port
+```bash
+VNC_PORT=11111 docker compose -f <downloaded-compose>.yaml [ -p name ] up
 ```
 
 ## Run at local (linux, windows-wol)
@@ -78,12 +105,11 @@ BUILD_DEVEL=yes ./build.sh
 ```
 
 - Development branch
-- https://github.com/IRSL-tut/choreonoid/tree/devel
-- https://github.com/IRSL-tut/choreonoid_ros/tree/devel
-- https://github.com/IRSL-tut/robot_assembler_plugin/tree/devel
-- https://github.com/IRSL-tut/jupyter_plugin/tree/devel
-- https://github.com/IRSL-tut/irsl_choreonoid_ros/tree/devel
-
+  - https://github.com/IRSL-tut/choreonoid/tree/devel
+  - https://github.com/IRSL-tut/choreonoid_ros/tree/devel
+  - https://github.com/IRSL-tut/robot_assembler_plugin/tree/devel
+  - https://github.com/IRSL-tut/jupyter_plugin/tree/devel
+  - https://github.com/IRSL-tut/irsl_choreonoid_ros/tree/devel
 
 ## Related repositories
 
