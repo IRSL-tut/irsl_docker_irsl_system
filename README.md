@@ -1,46 +1,18 @@
 # irsl_system
 
-## Related repositories
+## Using on browser
 
-### choreonoid
-https://github.com/IRSL-tut/choreonoid
-( https://github.com/choreonoid/choreonoid )
+- Install docker (linux, windows-wol) or docker-destkop (windows)
 
-### choreonoid_ros
-https://github.com/IRSL-tut/choreonoid_ros
-( https://github.com/choreonoid/choreonoid_ros )
+- Download a file for docker compose
 
-### irsl_choreonoid
-https://github.com/IRSL-tut/irsl_choreonoid
+- RUN
 
-### irsl_choreonoid_ros
-https://github.com/IRSL-tut/irsl_choreonoid_ros
-
-### robot_assembler_plugin
-https://github.com/IRSL-tut/robot_assembler_plugin
-
-### jupyter_plugin
-https://github.com/IRSL-tut/jupyter_plugin
-
-
-## Build
-
-```
-[ NO_CACHE=yes ] ./build.sh
+```bash
+docker compose -f <downloaded-compose>.yaml [ -p name ] up
 ```
 
-```
-BUILD_DEVEL=yes ./build.sh
-```
-
-- Development branch
-- https://github.com/IRSL-tut/choreonoid/tree/devel
-- https://github.com/IRSL-tut/choreonoid_ros/tree/devel
-- https://github.com/IRSL-tut/robot_assembler_plugin/tree/devel
-- https://github.com/IRSL-tut/jupyter_plugin/tree/devel
-- https://github.com/IRSL-tut/irsl_choreonoid_ros/tree/devel
-
-## Run
+## Run at local (linux, windows-wol)
 
 - all options
 ```
@@ -86,3 +58,51 @@ $ ./run.sh choreonoid-console
 ```
 
 launch choreonoid and open console(jupyter-console) connected to launched choreonoid
+
+
+## Build docker image at local
+
+### Build base libraries
+
+- https://github.com/IRSL-tut/irsl_docker_base
+- https://github.com/IRSL-tut/irsl_docker_xeus
+
+### Build irsl_system
+
+```
+[ NO_CACHE=yes ] ./build.sh
+```
+
+```
+BUILD_DEVEL=yes ./build.sh
+```
+
+- Development branch
+- https://github.com/IRSL-tut/choreonoid/tree/devel
+- https://github.com/IRSL-tut/choreonoid_ros/tree/devel
+- https://github.com/IRSL-tut/robot_assembler_plugin/tree/devel
+- https://github.com/IRSL-tut/jupyter_plugin/tree/devel
+- https://github.com/IRSL-tut/irsl_choreonoid_ros/tree/devel
+
+
+## Related repositories
+
+### choreonoid
+https://github.com/IRSL-tut/choreonoid
+( https://github.com/choreonoid/choreonoid )
+
+### choreonoid_ros
+https://github.com/IRSL-tut/choreonoid_ros
+( https://github.com/choreonoid/choreonoid_ros )
+
+### irsl_choreonoid
+https://github.com/IRSL-tut/irsl_choreonoid
+
+### irsl_choreonoid_ros
+https://github.com/IRSL-tut/irsl_choreonoid_ros
+
+### robot_assembler_plugin
+https://github.com/IRSL-tut/robot_assembler_plugin
+
+### jupyter_plugin
+https://github.com/IRSL-tut/jupyter_plugin
