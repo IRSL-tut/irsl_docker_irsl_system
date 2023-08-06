@@ -14,9 +14,9 @@ source /choreonoid_ws/install/setup.bash
 
 if [ "${_COM}" == "assembler" ]; then
     ${_VGLRUN} choreonoid --jupyter-connection ${_CONNECTION} \
-               /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/layout/assembler.cnoid \
-               --assembler /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/irsl/irsl_assembler_config.yaml \
-               --original-project /choreonoid_ws/install/share/choreonoid-1.8/robot_assembler/layout/original.cnoid
+               /choreonoid_ws/install/share/choreonoid-2.0/robot_assembler/layout/assembler.cnoid \
+               --assembler /choreonoid_ws/install/share/choreonoid-2.0/robot_assembler/irsl/irsl_assembler_config.yaml \
+               --original-project /choreonoid_ws/install/share/choreonoid-2.0/robot_assembler/layout/original.cnoid
 elif [ "${_COM}" == "choreonoid" ]; then
     ${_VGLRUN} choreonoid --jupyter-connection ${_CONNECTION}
 elif [ "${_COM}" == "roboprog" ]; then
