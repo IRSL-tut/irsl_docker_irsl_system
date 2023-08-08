@@ -3,9 +3,9 @@
 ## Using on browser
 
 ### Preparing
-- Install docker (linux, windows-wol) or docker-destkop (windows)
+- Install docker (linux, windows-wsl) or docker-destkop (windows)
 - Download a file for docker compose
-  - Linux, Windows-WOL
+  - Linux, Windows-WSL
     - https://github.com/IRSL-tut/irsl_docker_irsl_system/raw/main/files/docker-compose-linux.yaml
   - Linux with GPU(nvidia and using nvidia-docker)
     - https://github.com/IRSL-tut/irsl_docker_irsl_system/raw/main/files/docker-compose-linux-gpu.yaml
@@ -39,7 +39,7 @@ docker compose -f <downloaded-compose>.yaml [ -p name ] up
 VNC_PORT=11111 docker compose -f <downloaded-compose>.yaml [ -p name ] up
 ```
 
-## Run at local (linux, windows-wol)
+## Run at local (linux, windows-wsl)
 
 - all options
 ```
