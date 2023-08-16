@@ -43,7 +43,7 @@ VNC_PORT=11111 docker compose -f <downloaded-compose>.yaml [ -p name ] up
 
 - all options
 ```
-run.sh [-D | --devel] [-p | --port port] [ choreonoid (-- args) | assembler | jypyter | choreonoid-console | python (-- args) | ipython (-- args) ]"
+run.sh [OPTIONS] [ choreonoid (-- args) | assembler | jypyter | choreonoid-console | python (-- args) | ipython (-- args) ] [ -- args ] "
 ```
 
 - bash
@@ -91,6 +91,8 @@ launch choreonoid and open console(jupyter-console) connected to launched choreo
 
 ### Build base libraries
 
+Please build docker images described below.
+
 - https://github.com/IRSL-tut/irsl_docker_base
 - https://github.com/IRSL-tut/irsl_docker_xeus
 
@@ -115,11 +117,11 @@ BUILD_DEVEL=yes ./build.sh
 
 ### choreonoid
 https://github.com/IRSL-tut/choreonoid
-( https://github.com/choreonoid/choreonoid )
+( forked from https://github.com/choreonoid/choreonoid )
 
 ### choreonoid_ros
 https://github.com/IRSL-tut/choreonoid_ros
-( https://github.com/choreonoid/choreonoid_ros )
+( forked from https://github.com/choreonoid/choreonoid_ros )
 
 ### irsl_choreonoid
 https://github.com/IRSL-tut/irsl_choreonoid
