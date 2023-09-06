@@ -1,0 +1,10 @@
+{
+    "display_name": "ChoreonoidROS",
+    "argv": [
+        "roslaunch",
+        "choreonoid_ros",
+        "choreonoid.launch",
+        "choreonoid_arg:='--jupyter-connection={connection_file}'"
+    ],
+    "language": "python"
+}
