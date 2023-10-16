@@ -47,8 +47,6 @@ docker run \
     --env="DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash" \
     --env="ROS_IP=localhost" \
     --env="ROS_MASTER_URI=http://localhost:11311" \
-    --env="JUPYTER_PATH=/choreonoid_ws/install/share/choreonoid-2.0/jupyter" \
-    --env="PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-2.0/python" \
     --env="DISPLAY"  \
     --env="QT_X11_NO_MITSHM=1" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
@@ -58,6 +56,8 @@ docker run \
     -- ${iname} \
     ${VAR}
 
+##    --env="JUPYTER_PATH=/choreonoid_ws/install/share/choreonoid-2.0/jupyter" \
+##    --env="PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-2.0/python" \
 ##xhost -local:root
 
 ## capabilities

@@ -11,6 +11,7 @@ JUPYTER_PORT="8888"
 JUPYTER_DIR=/userdir
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
+IMAGE_NAME=""
 OPT=""
 _PULL=""
 _REPO="repo.irsl.eiiris.tut.ac.jp/"
@@ -28,6 +29,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         -w|--workspace)
             WORK_DIR="$2"
+            shift
+            shift
+            ;;
+        -I|--image)
+            IMAGE_NAME="$2"
             shift
             shift
             ;;
@@ -108,6 +114,9 @@ fi
 dimage="${_REPO}irsl_system:noetic"
 if [ -n "${USE_DEVEL}" ]; then
     dimage="${_REPO}irsl_system_devel:noetic"
+fi
+if [ -n "${IMAGE_NAME}" ]; then
+    dimage="${IMAGE_NAME}"
 fi
 
 if [ -n "${_PULL}" ]; then
