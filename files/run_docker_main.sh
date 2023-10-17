@@ -37,12 +37,15 @@ xhost +si:localuser:root
 
 rmimage=$(docker rm ${cname})
 
+set -x
+
 docker run \
     --privileged     \
     ${OPT}           \
     ${GPU_OPT}       \
     ${NET_OPT}       \
     ${USER_SETTING}  \
+    ${DOCKER_OPTION} \
     ${DOCKER_ENVIRONMENT_VAR} \
     --env="DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash" \
     --env="ROS_IP=localhost" \

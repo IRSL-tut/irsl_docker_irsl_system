@@ -15,7 +15,8 @@ IMAGE_NAME=""
 OPT=""
 _PULL=""
 _REPO="repo.irsl.eiiris.tut.ac.jp/"
-
+MOUNT_OPTION=""
+_DOCKER_OPT=""
 while [[ $# -gt 0 ]]; do
     case $1 in
         -D|--devel)
@@ -52,6 +53,16 @@ while [[ $# -gt 0 ]]; do
             ;;
         -it)
             OPT="$OPT -it"
+            shift
+            ;;
+        --mount)
+            MOUNT_OPTION="${MOUNT_OPTION} $2"
+            shift
+            shift
+            ;;
+        --docker-option)
+            _DOCKER_OPT="${_DOCKER_OPT} $2"
+            shift
             shift
             ;;
         -H|--hub)
@@ -153,5 +164,6 @@ MOUNTED_DIR=$WORK_DIR \
 OPT=$OPT \
 NO_GPU=$_NO_GPU \
 USE_USER=$_USE_USER \
+DOCKER_OPTION="${MOUNT_OPTION} ${_DOCKER_OPT}" \
 ${abs_dir}/files/run_docker_main.sh \
 ${cur_var}
