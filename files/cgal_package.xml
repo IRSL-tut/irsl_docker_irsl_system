@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cgal</name>
+  <version>0.0.0</version>
+  <description>CGAL(package.xml for building with catkin/colcon</description>
+  <maintainer email="kakiuchi.yohei.sw@tut.jp">Yohei Kakiuchi (just this package.xml) </maintainer>
+  <license>GPL v3</license>
+  <author email="kakiuchi.yohei.sw@tut.jp">Yohei Kakiuchi (just this package.xml) </author>
+  <!--url type="website"></url-->
+  <url type="repository">https://github.com/CGAL/cgal</url>
+
+  <depend>mpfr</depend>
+  <depend>libgmp</depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
