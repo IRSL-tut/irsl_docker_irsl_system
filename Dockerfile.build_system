@@ -36,9 +36,14 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool init src https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall && \
     wstool set choreonoid_ros      https://github.com/IRSL-tut/choreonoid_ros.git      -y -t src -v stable --git && \
     wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -y -t src           --git && \
+    wstool set cnoid_cgal          https://github.com/IRSL-tut/cnoid_cgal.git          -y -t src           --git && \
     wstool update -t src && \
     patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
+
+### add cgal to workspace for cnoid_cgal
+RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6/CGAL-5.6.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
+COPY files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
 RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
@@ -53,7 +58,7 @@ RUN apt update -q -qq && \
     else \
     apt install -q -qq -y python-catkin-tools libreadline-dev ipython3; fi && \
     rosdep update -y -q -r && \
-    rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros && \
+    rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
 
@@ -64,7 +69,8 @@ RUN apt update -q -qq && \
 ### clean after build
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
 ### without clean
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1"
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal --no-status --no-notify -p 1"
+
 
 ADD files/kernels /jupyter/kernels
 ADD userdir/ /user_scripts
