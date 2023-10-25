@@ -6,6 +6,8 @@ cname=${DOCKER_CONTAINER:-"docker_irsl_system"} ## name of container (should be 
 DEFAULT_USER_DIR="$(pwd)"
 mtdir=${MOUNTED_DIR:-$DEFAULT_USER_DIR}
 
+_ROS_SETUP=${DOCKER_ROS_SETUP:-"/choreonoid_ws/install/setup.bash"}
+
 VAR=${@:-"bash"}
 if [ $# -eq 0 -a -z "$OPT" ]; then
     OPT=-it
@@ -47,7 +49,7 @@ docker run \
     ${USER_SETTING}  \
     ${DOCKER_OPTION} \
     ${DOCKER_ENVIRONMENT_VAR} \
-    --env="DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash" \
+    --env="DOCKER_ROS_SETUP=${_ROS_SETUP}" \
     --env="ROS_IP=localhost" \
     --env="ROS_MASTER_URI=http://localhost:11311" \
     --env="DISPLAY"  \

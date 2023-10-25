@@ -11,6 +11,7 @@ JUPYTER_PORT="8888"
 JUPYTER_DIR=/userdir
 VERBOSE=""
 CONTAINER_NAME="docker_irsl_system"
+_ROS_SETUP=""
 IMAGE_NAME=""
 OPT=""
 _PULL=""
@@ -62,6 +63,11 @@ while [[ $# -gt 0 ]]; do
             ;;
         --docker-option)
             _DOCKER_OPT="${_DOCKER_OPT} $2"
+            shift
+            shift
+            ;;
+        --ros-setup)
+            _ROS_SETUP="$2"
             shift
             shift
             ;;
@@ -159,6 +165,7 @@ fi
 echo "image: $dimage"
 echo "args: $cur_var"
 DOCKER_CONTAINER=$CONTAINER_NAME \
+DOCKER_ROS_SETUP=$_ROS_SETUP \
 DOCKER_IMAGE=$dimage \
 MOUNTED_DIR=$WORK_DIR \
 OPT=$OPT \
