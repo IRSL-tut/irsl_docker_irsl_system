@@ -37,6 +37,7 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     wstool set choreonoid_ros      https://github.com/IRSL-tut/choreonoid_ros.git      -y -t src -v stable --git && \
     wstool set irsl_choreonoid_ros https://github.com/IRSL-tut/irsl_choreonoid_ros.git -y -t src           --git && \
     wstool set cnoid_cgal          https://github.com/IRSL-tut/cnoid_cgal.git          -y -t src           --git && \
+    wstool set irsl_sim_environments https://github.com/IRSL-tut/irsl_sim_environments.git -y -t src       --git && \
     wstool update -t src && \
     patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
@@ -69,7 +70,7 @@ RUN apt update -q -qq && \
 ### clean after build
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
 ### without clean
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal --no-status --no-notify -p 1"
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments --no-status --no-notify -p 1"
 
 
 ADD files/kernels /jupyter/kernels
