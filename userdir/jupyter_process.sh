@@ -10,7 +10,8 @@ if [ -n "${VGL_DISPLAY}" ]; then
     _VGLRUN=vglrun
 fi
 
-source /choreonoid_ws/install/setup.bash
+#source /choreonoid_ws/install/setup.bash
+source /irsl_entryrc
 
 if [ "${_COM}" == "assembler" ]; then
     ${_VGLRUN} choreonoid --jupyter-connection ${_CONNECTION} \

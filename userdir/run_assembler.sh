@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source /choreonoid_ws/install/setup.bash
+#source /choreonoid_ws/install/setup.bash
+source /irsl_entryrc
 
 ##
 export RADIR="$(dirname $(which choreonoid))/../share/choreonoid-2.0/robot_assembler"
