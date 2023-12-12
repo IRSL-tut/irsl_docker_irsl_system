@@ -7,7 +7,12 @@ version: "3.0"
 # JUPYTER_PORT = 8888 ## port of jupyter
 # JUPYTER_TOKEN = ''  ## token (password) to login jupyter
 # DOCKER_DISPLAY = 10
-# REPO=irslrepo/
+# REPO      = irslrepo/
+# ARG_IMAGE = irsl_system:noetic
+# NETWORK_MODE = bridge
+# ARG_ROS_IP   = localhost
+# ARG_ROS_MSATER_URI = http://localhost:11311
+# DOCKER_ROS_SETUP   = /choreonoid_ws/install/setup.bash
 ###
 services:
   xserver:
@@ -27,7 +32,7 @@ services:
     volumes:
       - '/tmp/.X11-unix:/tmp/.X11-unix'
   main:
-    image: ${REPO:-irslrepo/}irsl_system:noetic
+    image: ${REPO:-irslrepo/}${ARG_IMAGE:-irsl_system:noetic}
     security_opt:
       - seccomp:unconfined
     ports:
@@ -35,9 +40,9 @@ services:
     command: [ "jupyter", "lab", "--allow-root", "--no-browser", "--ip=0.0.0.0", "--port=8888", "--ServerApp.token='${JUPYTER_TOKEN}'", "--FileCheckpoints.checkpoint_dir=/tmp" ]
     environment:
       - DISPLAY=:${DOCKER_DISPLAY:-10}
-      - DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash
-      - ROS_IP=localhost
-      - ROS_MASTER_URI=http://localhost:11311
+      - DOCKER_ROS_SETUP=${DOCKER_ROS_SETUP:-/choreonoid_ws/install/setup.bash}
+      - ROS_IP=${ARG_ROS_IP:-localhost}
+      - ROS_MASTER_URI=${ARG_ROS_MASTER_URI:-http://localhost:11311}
     working_dir: /userdir
     user: "${DOCKER_USER:-0}:${DOCKER_GROUP:-0}"
     volumes:
