@@ -18,6 +18,9 @@ _PULL=""
 _REPO="repo.irsl.eiiris.tut.ac.jp/"
 MOUNT_OPTION=""
 _DOCKER_OPT=""
+_ROS_IP=
+_ROS_MASTER_URI=
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -D|--devel)
@@ -97,6 +100,16 @@ while [[ $# -gt 0 ]]; do
             echo "run.sh [-D | --devel] [-p | --port port] [ choreonoid (-- args) | assembler | jypyter | choreonoid-console | python (-- args) | ipython (-- args) ]"
             exit 0
             ;;
+        --ros-ip)
+            _ROS_IP="$2"
+            shift
+            shift
+            ;;
+        --ros-master-uri)
+            _ROS_MASTER_URI="$2"
+            shift
+            shift
+            ;;
         --)
             shift
             break
@@ -171,6 +184,8 @@ MOUNTED_DIR=$WORK_DIR \
 OPT=$OPT \
 NO_GPU=$_NO_GPU \
 USE_USER=$_USE_USER \
+ARG_ROS_IP=${_ROS_IP} \
+ARG_ROS_MASTER_URI=${_ROS_MASTER_URI} \
 DOCKER_OPTION="${MOUNT_OPTION} ${_DOCKER_OPT}" \
 ${abs_dir}/files/run_docker_main.sh \
 ${cur_var}
