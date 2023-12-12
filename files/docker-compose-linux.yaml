@@ -45,4 +45,4 @@ services:
       - '/tmp/.X11-unix:/tmp/.X11-unix'
     depends_on:
       - xserver
-    network_mode: host
+    network_mode: ${NETWORK_MODE:-bridge}
