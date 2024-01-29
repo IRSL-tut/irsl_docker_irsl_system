@@ -76,6 +76,16 @@ RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cm
 ADD files/kernels /jupyter/kernels
 ADD userdir/ /user_scripts
 
+### add jupyterlab settings 
+RUN  mkdir -p /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension && \
+     echo -e '{\n\
+    "availableProviders": {\n\
+        "lsp": 700,\n\
+        "CompletionProvider:context": 500,\n\
+        "CompletionProvider:kernel": 1000\n\
+    }\n\
+}' >> /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension/manager.jupyterlab-settings
+
 ENV PATH=$PATH:/user_scripts
 ENV JUPYTER_PATH=/jupyter
 ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-2.0/python
