@@ -57,7 +57,9 @@ RUN apt update -q -qq && \
                            jedi-language-server \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
-                           jupytext
+                           bash_kernel \
+                           jupytext && \
+    python3 -m bash_kernel.install
 
 ### cache may be ignored after here
 COPY --from=builder /opt/xeus /opt/xeus
