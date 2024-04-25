@@ -84,7 +84,8 @@ RUN  mkdir -p /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extens
         "CompletionProvider:context": 500,\n\
         "CompletionProvider:kernel": 1000\n\
     }\n\
-}' >> /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension/manager.jupyterlab-settings
+}' >> /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension/manager.jupyterlab-settings && \
+     chmod -R a+rwx /ros_home/.jupyter
 
 ENV PATH=$PATH:/user_scripts
 ENV JUPYTER_PATH=/jupyter
