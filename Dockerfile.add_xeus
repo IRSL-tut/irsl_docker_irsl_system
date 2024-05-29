@@ -58,7 +58,8 @@ RUN apt update -q -qq && \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
                            bash_kernel \
-                           jupytext && \
+                           jupytext \
+                           networkx && \
     python3 -m bash_kernel.install
 
 ### cache may be ignored after here
