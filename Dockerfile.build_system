@@ -66,6 +66,8 @@ RUN apt update -q -qq && \
 # jupyter installed by Dockerfile.add_xeus
 # RUN python3 -m pip install --upgrade pip && \
 #     python3 -m pip install ipython jedi jupyterlab jupyter-console
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install paramiko scp
 
 ### clean after build
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
