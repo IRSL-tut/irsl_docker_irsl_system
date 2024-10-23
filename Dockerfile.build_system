@@ -5,7 +5,7 @@ FROM ${BASE_IMAGE}
 
 ARG UBUNTU_VER=18.04
 
-LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
+LABEL maintainer="IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
 SHELL ["/bin/bash", "-c"]
 
