@@ -1,13 +1,10 @@
 ARG BUILD_IMAGE=ubuntu:20.04
 ARG BASE_IMAGE=ubuntu:20.04
-ARG UBUNTU_VER=18.04
 
 FROM ${BUILD_IMAGE} as builder
 ## do nothing
 
 FROM ${BASE_IMAGE}
-
-ARG UBUNTU_VER
 
 LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
@@ -29,8 +26,7 @@ RUN chmod 1777 /tmp
 
 ### ROS related install
 RUN apt update -q -qq && \
-    apt install -q -qq -y curl libssl-dev openssl cmake g++ pkg-config git uuid-dev libsodium-dev && \
-    bash <(curl -s https://raw.githubusercontent.com/choreonoid/choreonoid/master/misc/script/install-requisites-ubuntu-20.04.sh) && \
+    apt install -q -qq -y curl libssl-dev openssl cmake g++ pkg-config git uuid-dev libsodium-dev libzmq5-dev && \
     apt install -q -qq -y ros-${ROS_DISTRO}-xacro \
     ros-${ROS_DISTRO}-cv-bridge                   \
     ros-${ROS_DISTRO}-ros-controllers             \
@@ -47,13 +43,15 @@ RUN apt update -q -qq && \
     ros-${ROS_DISTRO}-move-base                   \
     ros-${ROS_DISTRO}-amcl                        \
     ros-${ROS_DISTRO}-map-server                  \
-    ros-${ROS_DISTRO}-teb-local-planner           \
     ros-${ROS_DISTRO}-dwa-local-planner           \
     ros-${ROS_DISTRO}-global-planner              \
     ros-${ROS_DISTRO}-slam-gmapping               \
     ros-${ROS_DISTRO}-teleop-twist-keyboard       \
     ros-${ROS_DISTRO}-urdf-tutorial               \
     ros-${ROS_DISTRO}-urdf python3-pygraphviz && \
+    if [ "${ROS_DISTRO}" != "one" ]; then \
+        apt install -q -qq -y ros-${ROS_DISTRO}-teb-local-planner; \
+    fi && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
 
@@ -62,8 +60,13 @@ RUN apt update -q -qq && \
     apt install -q -qq -y python3-pip && \
     apt clean && \
     rm -rf /var/lib/apt/lists/ && \
-    python3 -m pip install --upgrade pip && \
-    python3 -m pip install ipython jedi jupyterlab jupyter-console  \
+    if [ "$(lsb_release -s -r)" = "24.04" ]; then \
+        PIP_OPT="--break-system-packages"; \
+    else \
+        python3 -m pip install --upgrade pip; \
+    fi && \
+    python3 -m pip install $PIP_OPT \
+                           ipython jedi jupyterlab jupyter-console  \
                            jedi-language-server \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
