@@ -40,6 +40,8 @@ jobs:
       IMAGE_TAG: ${{ inputs.hash }}
       IMAGE_SRC: ${{ inputs.source }}
     steps:
+      - name: test
+        run: echo "${{github.ref}} / ${{github.repository}} / ${{github.ref_name}} / ${{github.head_ref}} / ${{github.event}}"
       - name: workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
         run: echo "workflow_dispatch ${{ inputs.event_type }} from ${{ inputs.source }} ${{ inputs.hash }}"
@@ -86,7 +88,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Build (no cache)
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && inputs.event_type != 'build_devel'
+        env:
+          NO_CACHE: 'YES'
+          BUILD_ROS: ${{ env.ROS_DISTRO }}
+        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
+      - name: Build (Devel)
+        if: inputs.event_type == 'build_devel' || github.ref_name == 'devel'
         env:
           NO_CACHE: 'YES'
           BUILD_ROS: ${{ env.ROS_DISTRO }}
