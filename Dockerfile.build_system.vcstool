@@ -3,7 +3,7 @@
 ARG BASE_IMAGE=ros:ros-melodic-base
 FROM ${BASE_IMAGE}
 
-ARG CNOID_VERSION=2.0
+ARG CNOID_VERSION=2.3
 
 LABEL maintainer="IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
@@ -63,10 +63,9 @@ EOF
 
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     (mkdir src; cd src; vcs import --recursive < ../dot.rosinstall) && \
-    patch -d src -p0 < src/irsl_choreonoid/config/osqp-cpp.patch && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \
     find /choreonoid_ws/src/prioritized_qp /choreonoid_ws/src/ik_solvers /choreonoid_ws/src/qp_solvers \
-    -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
+         -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
 
 ### add cgal to workspace for cnoid_cgal
 RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6/CGAL-5.6.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
@@ -122,5 +121,5 @@ ENV JUPYTER_PATH=/jupyter
 ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-${CNOID_VERSION}/python
 
 ### [HOTFIX]
-RUN if [ -e /choreonoid_ws/install/share/choreonoid-2.0/robot_assembler/irsl ]; then  rm -rf /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl; fi && \
+RUN if [ -e /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl ]; then  rm -rf /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl; fi && \
     git clone https://github.com/IRSL-tut/robot_assembler_config_IRSL.git /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl
