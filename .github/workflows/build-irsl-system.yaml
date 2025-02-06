@@ -90,13 +90,13 @@ jobs:
         env:
           NO_CACHE: 'YES'
           BUILD_ROS: ${{ env.ROS_DISTRO }}
-        run: ./build.sh actions/irsl_system_${{ env.UBUNTU_VER }}_${IMAGE_SRC}:${IMAGE_TAG}
+        run: ./build.sh actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Build (cached)
         if: github.event_name != 'workflow_dispatch'
         env:
           NO_CACHE: ''
           BUILD_ROS: ${{ env.ROS_DISTRO }}
-        run: ./build.sh actions/irsl_system_${{ env.UBUNTU_VER }}_${IMAGE_SRC}:${IMAGE_TAG}
+        run: ./build.sh actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Deploy
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
@@ -105,7 +105,7 @@ jobs:
       - name: Deploy (Devel)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
         run: |
-          docker tag actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
