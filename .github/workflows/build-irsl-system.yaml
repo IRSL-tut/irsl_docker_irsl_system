@@ -31,8 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #ubuntu: [ 20.04, 22.04]
-        ubuntu: [ 20.04 ]
+        build_target: [ 20.04, 24.04one ] ##
     runs-on: self-hosted
     env:
       IMAGE_NAME: irsl_system
@@ -46,12 +45,21 @@ jobs:
         run: echo "workflow_dispatch ${{ inputs.event_type }} from ${{ inputs.source }} ${{ inputs.hash }}"
       - name: Check Version
         run: |
-          if   [ ${{ matrix.ubuntu }} == 22.04 ]; then
+          if   [ ${{ matrix.build_target }} == 22.04 ]; then
             echo "ROS_DISTRO=humble" >> $GITHUB_ENV
-          elif [ ${{ matrix.ubuntu }} == 20.04 ]; then
+            echo "UBUNTU_VER=22.04"  >> $GITHUB_ENV
+          elif [ ${{ matrix.build_target }} == 20.04 ]; then
             echo "ROS_DISTRO=noetic" >> $GITHUB_ENV
-          elif [ ${{ matrix.ubuntu }} == 18.04 ]; then
+            echo "UBUNTU_VER=20.04"  >> $GITHUB_ENV
+          elif [ ${{ matrix.build_target }} == 18.04 ]; then
             echo "ROS_DISTRO=melodic" >> $GITHUB_ENV
+            echo "UBUNTU_VER=18.04"  >> $GITHUB_ENV
+          elif [ ${{ matrix.build_target }} == 24.04 ]; then
+            echo "ROS_DISTRO=jazzy" >> $GITHUB_ENV
+            echo "UBUNTU_VER=24.04"  >> $GITHUB_ENV
+          elif [ ${{ matrix.build_target }} == 24.04one ]; then
+            echo "ROS_DISTRO=one" >> $GITHUB_ENV
+            echo "UBUNTU_VER=24.04"  >> $GITHUB_ENV
           else
             echo "ROS_DISTRO=none" >> $GITHUB_ENV
           fi
@@ -82,22 +90,22 @@ jobs:
         env:
           NO_CACHE: 'YES'
           BUILD_ROS: ${{ env.ROS_DISTRO }}
-        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
+        run: ./build.sh actions/irsl_system_${{ env.UBUNTU_VER }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Build (cached)
         if: github.event_name != 'workflow_dispatch'
         env:
           NO_CACHE: ''
           BUILD_ROS: ${{ env.ROS_DISTRO }}
-        run: ./build.sh actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG}
+        run: ./build.sh actions/irsl_system_${{ env.UBUNTU_VER }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Deploy
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
       - name: Deploy (Devel)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
         run: |
-          docker tag actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker tag actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
@@ -108,10 +116,10 @@ jobs:
       - name: Deploy(HUB)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
       - name: Deploy(HUB, devel)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
         run: |
-          docker tag actions/irsl_system_${{ matrix.ubuntu }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          docker tag actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
           docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
