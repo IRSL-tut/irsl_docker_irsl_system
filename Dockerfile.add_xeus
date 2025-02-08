@@ -27,31 +27,6 @@ RUN chmod 1777 /tmp
 ### ROS related install
 RUN apt update -q -qq && \
     apt install -q -qq -y curl libssl-dev openssl cmake g++ pkg-config git uuid-dev libsodium-dev libzmq5-dev && \
-    apt install -q -qq -y ros-${ROS_DISTRO}-xacro \
-    ros-${ROS_DISTRO}-cv-bridge                   \
-    ros-${ROS_DISTRO}-ros-controllers             \
-    ros-${ROS_DISTRO}-robot-state-publisher       \
-    ros-${ROS_DISTRO}-smach-ros                   \
-    ros-${ROS_DISTRO}-smach-viewer                \
-    ros-${ROS_DISTRO}-qt-dotgraph                 \
-    ros-${ROS_DISTRO}-image-transport             \
-    ros-${ROS_DISTRO}-angles                      \
-    ros-${ROS_DISTRO}-controller-manager          \
-    ros-${ROS_DISTRO}-hardware-interface          \
-    ros-${ROS_DISTRO}-joint-limits-interface      \
-    ros-${ROS_DISTRO}-transmission-interface      \
-    ros-${ROS_DISTRO}-move-base                   \
-    ros-${ROS_DISTRO}-amcl                        \
-    ros-${ROS_DISTRO}-map-server                  \
-    ros-${ROS_DISTRO}-dwa-local-planner           \
-    ros-${ROS_DISTRO}-global-planner              \
-    ros-${ROS_DISTRO}-slam-gmapping               \
-    ros-${ROS_DISTRO}-teleop-twist-keyboard       \
-    ros-${ROS_DISTRO}-urdf-tutorial               \
-    ros-${ROS_DISTRO}-urdf python3-pygraphviz && \
-    if [ "${ROS_DISTRO}" != "one" ]; then \
-        apt install -q -qq -y ros-${ROS_DISTRO}-teb-local-planner; \
-    fi && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
 
@@ -71,8 +46,7 @@ RUN apt update -q -qq && \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
                            bash_kernel \
-                           jupytext \
-                           networkx && \
+                           jupytext && \
     python3 -m bash_kernel.install
 
 ### cache may be ignored after here

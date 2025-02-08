@@ -22,8 +22,7 @@ RUN sed -i 's@archive.ubuntu.com@ftp.jaist.ac.jp/pub/Linux@g' /etc/apt/sources.l
 
 ###
 RUN apt update -q -qq && \
-    apt install -q -qq -y curl wget git bc \
-                          vim-tiny net-tools iproute2 traceroute && \
+    apt install -q -qq -y curl wget git bc && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
 
@@ -86,16 +85,8 @@ RUN apt update -q -qq && \
     fi && \
     rosdep update -y -q -r && \
     rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
-    apt install -q -qq -y net-tools iproute2 && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
-
-RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
-        PIP_OPT="--break-system-packages"; \
-    else \
-        python3 -m pip install --upgrade pip; \
-    fi && \
-    python3 -m pip install $PIP_OPT paramiko scp scipy
 
 ### clean after build
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
