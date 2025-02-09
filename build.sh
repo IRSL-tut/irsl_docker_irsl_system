@@ -55,6 +55,10 @@ if [ -n "${BUILD_DEVEL}" ]; then
     DOCKER_FILE=Dockerfile.build_system.vcstool
 fi
 
+if [ ${ROS_DISTRO_} == "humble" -o ${ROS_DISTRO_} == "jazzy" ]; then
+    DOCKER_FILE=Dockerfile.build_system.ros2
+fi
+
 echo "Build Image: ${TARGET_IMG}"
 
 set -x
@@ -65,6 +69,10 @@ docker build . --progress=plain ${PULL} -f Dockerfile.add_xeus  \
        --build-arg BASE_IMAGE=${BASE_IMG} --build-arg BUILD_IMAGE=${XEUS_IMG} \
        -t build_temp/build_system:0
 
-docker build . ${DOCKER_OPT} -f ${DOCKER_FILE} \
+docker build . --progress=plain -f Dockerfile.add_extra_files  \
        --build-arg BASE_IMAGE=build_temp/build_system:0 \
+       -t build_temp/build_system:1
+
+docker build . ${DOCKER_OPT} -f ${DOCKER_FILE} \
+       --build-arg BASE_IMAGE=build_temp/build_system:1 \
        -t ${TARGET_IMG}

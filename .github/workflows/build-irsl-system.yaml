@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_target: [ 20.04, 24.04one ] ##
+        build_target: [ 20.04, 24.04, 24.04one ] ##
     runs-on: self-hosted
     env:
       IMAGE_NAME: irsl_system
@@ -46,19 +46,19 @@ jobs:
       - name: Check Version
         run: |
           if   [ ${{ matrix.build_target }} == 22.04 ]; then
-            echo "ROS_DISTRO=humble" >> $GITHUB_ENV
-            echo "UBUNTU_VER=22.04"  >> $GITHUB_ENV
+            echo "ROS_DISTRO=humble"  >> $GITHUB_ENV
+            echo "UBUNTU_VER=22.04"   >> $GITHUB_ENV
           elif [ ${{ matrix.build_target }} == 20.04 ]; then
-            echo "ROS_DISTRO=noetic" >> $GITHUB_ENV
-            echo "UBUNTU_VER=20.04"  >> $GITHUB_ENV
+            echo "ROS_DISTRO=noetic"  >> $GITHUB_ENV
+            echo "UBUNTU_VER=20.04"   >> $GITHUB_ENV
           elif [ ${{ matrix.build_target }} == 18.04 ]; then
             echo "ROS_DISTRO=melodic" >> $GITHUB_ENV
-            echo "UBUNTU_VER=18.04"  >> $GITHUB_ENV
+            echo "UBUNTU_VER=18.04"   >> $GITHUB_ENV
           elif [ ${{ matrix.build_target }} == 24.04 ]; then
-            echo "ROS_DISTRO=jazzy" >> $GITHUB_ENV
+            echo "ROS_DISTRO=jazzy"  >> $GITHUB_ENV
             echo "UBUNTU_VER=24.04"  >> $GITHUB_ENV
           elif [ ${{ matrix.build_target }} == 24.04one ]; then
-            echo "ROS_DISTRO=one" >> $GITHUB_ENV
+            echo "ROS_DISTRO=one"    >> $GITHUB_ENV
             echo "UBUNTU_VER=24.04"  >> $GITHUB_ENV
           else
             echo "ROS_DISTRO=none" >> $GITHUB_ENV
