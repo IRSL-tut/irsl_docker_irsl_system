@@ -62,7 +62,7 @@ RUN apt update -q -qq && \
     apt install -q -qq -y python-catkin-tools libreadline-dev ipython3; fi && \
     rosdep update -y -q -r && \
     rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
-    apt install -q -qq -y net-tools iproute2 && \
+    apt install -q -qq -y net-tools iproute2 libzmq5-dev && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
 

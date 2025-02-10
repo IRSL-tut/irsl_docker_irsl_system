@@ -25,7 +25,7 @@ DOCKER_OPT='--progress plain'
 
 _REPO=${REPO:-repo.irsl.eiiris.tut.ac.jp/}
 XEUS_IMG=${_REPO}xeus:${UBUNTU_VER}
-BASE_IMG=${INPUT_IMAGE:-${_REPO}irsl_base:${ROS_DISTRO_}_nvidia}
+BASE_IMG=${INPUT_IMAGE:-${_REPO}irsl_base:${ROS_DISTRO_}_opengl}
 
 DEFAULT_IMG=${_REPO}irsl_system:${ROS_DISTRO_}
 TARGET_IMG=${1:-${DEFAULT_IMG}}
