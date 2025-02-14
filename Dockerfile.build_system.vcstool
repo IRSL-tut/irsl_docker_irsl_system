@@ -44,6 +44,7 @@ cat <<- _DOC_ >> dot.rosinstall
 - git:
     local-name: irsl_choreonoid_ros
     uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
+    version: devel_one_24.04
 - git:
     local-name: cnoid_cgal
     uri: https://github.com/IRSL-tut/cnoid_cgal.git
