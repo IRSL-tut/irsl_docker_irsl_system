@@ -1,0 +1,56 @@
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+###
+RUN apt update -q -qq && \
+    apt install -q -qq -y \
+       vim-tiny net-tools iproute2 traceroute \
+       net-tools iproute2 python3-pygraphviz  \
+       ros-${ROS_DISTRO}-xacro \
+       ros-${ROS_DISTRO}-cv-bridge                   \
+       ros-${ROS_DISTRO}-robot-state-publisher       \
+       ros-${ROS_DISTRO}-smach-ros                   \
+       ros-${ROS_DISTRO}-qt-dotgraph                 \
+       ros-${ROS_DISTRO}-image-transport             \
+       ros-${ROS_DISTRO}-angles                      \
+       ros-${ROS_DISTRO}-controller-manager          \
+       ros-${ROS_DISTRO}-hardware-interface          \
+       ros-${ROS_DISTRO}-transmission-interface      \
+       ros-${ROS_DISTRO}-teleop-twist-keyboard       \
+       ros-${ROS_DISTRO}-urdf-tutorial               \
+       ros-${ROS_DISTRO}-urdf                     && \
+    if [ "${ROS_DISTRO}" != "jazzy" -a "${ROS_DISTRO}" != "humble" ]; then \
+       apt install -q -qq -y \
+       ros-${ROS_DISTRO}-ros-controllers             \
+       ros-${ROS_DISTRO}-joint-limits-interface      \
+       ros-${ROS_DISTRO}-smach-viewer                \       
+       ros-${ROS_DISTRO}-move-base                   \
+       ros-${ROS_DISTRO}-amcl                        \
+       ros-${ROS_DISTRO}-map-server                  \
+       ros-${ROS_DISTRO}-dwa-local-planner           \
+       ros-${ROS_DISTRO}-global-planner              \
+       ros-${ROS_DISTRO}-slam-gmapping               \
+       ; \
+    else \
+       apt install -q -qq -y \
+       ros-${ROS_DISTRO}-ros2-controllers            \
+       ros-${ROS_DISTRO}-joint-limits                \
+       ros-${ROS_DISTRO}-nav2-amcl                   \
+       ros-${ROS_DISTRO}-nav2-map-server             \
+       ros-${ROS_DISTRO}-nav2-planner                \
+       ; \
+    fi && \
+    if [ "${ROS_DISTRO}" != "one" -a "${ROS_DISTRO}" != "jazzy" -a "${ROS_DISTRO}" != "humble" ]; then \
+       apt install -q -qq -y \
+       ros-${ROS_DISTRO}-teb-local-planner         ; \
+    fi && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
+
+###
+RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
+        PIP_OPT="--break-system-packages"; \
+    else \
+        python3 -m pip install --upgrade pip; \
+    fi && \
+    python3 -m pip install $PIP_OPT paramiko scp scipy networkx 
