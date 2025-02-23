@@ -32,19 +32,18 @@ RUN apt update -q -qq && \
 ## https://github.com/choreonoid/choreonoid/commit/5a1dbbfad83f9bc677761c3915e5a4614d559183
 ## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
 WORKDIR /choreonoid_ws
-RUN wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_one_24.04/config/dot.rosinstall
+RUN wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall
 RUN <<EOF
 cat <<- _DOC_ >> dot.rosinstall
 ### IRSL settings >>> ###
 - git:
     local-name: choreonoid_ros
     uri: https://github.com/IRSL-tut/choreonoid_ros.git
-    #version: stable
-    version: devel_one_24.04
+    version: stable
 - git:
     local-name: irsl_choreonoid_ros
     uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
-    version: devel_one_24.04
+    version: main
 - git:
     local-name: cnoid_cgal
     uri: https://github.com/IRSL-tut/cnoid_cgal.git
@@ -75,7 +74,7 @@ COPY files/cgal_package.xml src/cgal/package.xml
 RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 
 ## add jupyter_plugin
-RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git -b devel_one_24.04)
+RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 
 RUN apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
