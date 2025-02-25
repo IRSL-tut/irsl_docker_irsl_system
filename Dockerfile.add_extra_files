@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE}
 ###
 RUN apt update -q -qq && \
     apt install -q -qq -y \
-       vim-tiny net-tools iproute2 traceroute \
+       vim-tiny net-tools iputils-ping iproute2 traceroute \
        net-tools iproute2 python3-pygraphviz  python3-opencv \
        ros-${ROS_DISTRO}-xacro \
        ros-${ROS_DISTRO}-cv-bridge                   \
@@ -53,4 +53,4 @@ RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
     else \
         python3 -m pip install --upgrade pip; \
     fi && \
-    python3 -m pip install $PIP_OPT paramiko scp scipy networkx 
+    python3 -m pip install $PIP_OPT paramiko scp scipy matplotlib networkx
