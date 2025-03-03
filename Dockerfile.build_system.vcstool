@@ -103,7 +103,9 @@ RUN  mkdir -p /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extens
         "lsp": 700,\n\
         "CompletionProvider:context": 500,\n\
         "CompletionProvider:kernel": 1000\n\
-    }\n\
+    },\n\
+    "showDocumentationPanel": true,\n\
+    "autoCompletion": false\n\
 }' >> /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension/manager.jupyterlab-settings && \
      chmod -R a+rwx /ros_home/.jupyter
 
