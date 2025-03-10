@@ -79,9 +79,9 @@ RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut
 RUN apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
     if [ "$ROS_DISTRO" = "noetic" -o "$ROS_DISTRO" = "one" ]; then \
-        apt install -q -qq -y python3-catkin-tools libreadline-dev ipython3; \
+        apt install -q -qq -y python3-catkin-tools libreadline-dev ; \
     else \
-        apt install -q -qq -y python-catkin-tools libreadline-dev ipython3; \
+        apt install -q -qq -y python-catkin-tools libreadline-dev ; \
     fi && \
     rosdep update -y -q -r && \
     rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
