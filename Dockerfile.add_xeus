@@ -6,7 +6,7 @@ FROM ${BUILD_IMAGE} as builder
 
 FROM ${BASE_IMAGE}
 
-LABEL maintainer "IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
+LABEL maintainer="IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
 SHELL ["/bin/bash", "-c"]
 
