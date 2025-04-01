@@ -6,6 +6,7 @@ RUN apt update -q -qq && \
     apt install -q -qq -y \
        vim-tiny net-tools iputils-ping iproute2 traceroute \
        graphviz-dev \
+       libbullet-extras-dev \
        ros-${ROS_DISTRO}-xacro \
        ros-${ROS_DISTRO}-cv-bridge                   \
        ros-${ROS_DISTRO}-robot-state-publisher       \

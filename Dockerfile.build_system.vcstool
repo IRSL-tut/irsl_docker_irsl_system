@@ -91,7 +91,7 @@ RUN apt update -q -qq && \
 ### clean after build
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros --no-status --no-notify -p 1 && catkin clean -d -b --logs -y"
 ### without clean
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_raspi_controller --no-status --no-notify -p 1"
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_raspi_controller --no-status --no-notify -p 1"
 
 ADD files/kernels /jupyter/kernels
 ADD userdir/ /user_scripts
