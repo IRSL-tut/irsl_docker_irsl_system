@@ -6,13 +6,14 @@ set -e
 
 ## arguments as environment variables
 # BUILD_ROS [ noetic ] or humble
+# BUILD_UBUNTU [ optional ] or 20.04, 22.04, 24.04
 # REPO [repo.irsl.eiiris.tut.ac.jp/]
 # INPUT_IMAGE [ ${REPO}irsl_base:${BUILD_ROS}_nvidia ]
 # NO_CACHE [ '' ]
 
 ## noetic or melodic
 ROS_DISTRO_=${BUILD_ROS:-"noetic"}
-CUR_UBUNTU=${UBUNTU_VER:-""}
+CUR_UBUNTU=${BUILD_UBUNTU:-""}
 if [ ${ROS_DISTRO_} == "humble" ]; then
     if [ -z "${CUR_UBUNTU}" ]; then
         CUR_UBUNTU="22.04"
