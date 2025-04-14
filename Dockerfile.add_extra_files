@@ -12,7 +12,7 @@ RUN apt update -q -qq && \
        ros-${ROS_DISTRO}-robot-state-publisher       \
        ros-${ROS_DISTRO}-smach-ros                   \
        ros-${ROS_DISTRO}-qt-dotgraph                 \
-       ros-${ROS_DISTRO}-image-transport             \
+       ros-${ROS_DISTRO}-image-pipeline              \
        ros-${ROS_DISTRO}-angles                      \
        ros-${ROS_DISTRO}-controller-manager          \
        ros-${ROS_DISTRO}-hardware-interface          \
