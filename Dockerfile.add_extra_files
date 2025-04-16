@@ -5,7 +5,7 @@ FROM ${BASE_IMAGE}
 RUN apt update -q -qq && \
     apt install -q -qq -y \
        vim-tiny net-tools iputils-ping iproute2 traceroute \
-       graphviz-dev \
+       graphviz-dev byobu \
        libbullet-extras-dev \
        ros-${ROS_DISTRO}-xacro \
        ros-${ROS_DISTRO}-cv-bridge                   \
@@ -47,6 +47,11 @@ RUN apt update -q -qq && \
     fi && \
     apt clean && \
     rm -rf /var/lib/apt/lists/
+
+### byobu settings
+RUN mkdir -p /ros_home/.byobu ; HOME=/ros_home byobu ls ; \
+    echo -e "escape ^Tt\nbindkey \"^A\"" >> /ros_home/.byobu/keybindings ; \
+    echo -e "set -g prefix ^T\nset -g prefix2 ^O\nbind t send-prefix\nunbind-key -n C-a\n"  > /ros_home/.byobu/keybindings.tmux
 
 ###
 RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
