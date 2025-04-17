@@ -1,7 +1,7 @@
 {
-    "name": "docker_irsl_system",
+    "name": "docker_irsl_system_nogpu",
     "dockerComposeFile": "docker-compose.yml",
-    "service": "docker_irsl_system",
+    "service": "docker_irsl_system_nogpu",
     "workspaceFolder": "/userdir",
     "customizations": {
         "vscode": {
