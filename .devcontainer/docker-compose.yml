@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+    docker_irsl_system:
+        image: repo.irsl.eiiris.tut.ac.jp/irsl_system:noetic
+        environment:
+            - PYTHONPATH=/choreonoid_ws/install/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages:/choreonoid_ws/install/lib/choreonoid-2.0/python:/userdir
+            - DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash
+            - ROS_IP=localhost
+            - ROS_MASTER_URI=http://localhost:11311
+            - DISPLAY=$DISPLAY
+            - QT_X11_NO_MITSHM=1
+            - __IS_DOCKER__=1
+        volumes:
+            - ../userdir:/userdir
+            - /tmp/.X11-unix:/tmp/.X11-unix:rw
+            - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        network_mode: "host"
+        command: sleep infinity
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - seccomp:unconfined
+        privileged: true
+
