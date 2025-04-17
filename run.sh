@@ -171,6 +171,9 @@ elif [ "${PROG}" == "python" ]; then
 elif [ "${PROG}" == "ipython" ]; then
     OPT="-it"
     cur_var="ipython $*"
+elif [ "${PROG}" == "byobu" ]; then
+    OPT="-it"
+    cur_var="byobu $*"
 elif [ -n "${PROG}" ]; then
     cur_var="${PROG} $*"
 fi
