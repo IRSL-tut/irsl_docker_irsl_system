@@ -1,0 +1,19 @@
+{
+    "name": "docker_irsl_system_nvidia",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "docker_irsl_system_nvidia",
+    "workspaceFolder": "/userdir",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python", // python
+                "ms-toolsai.jupyter", // Jupyter
+                "fabiospampinato.vscode-terminals", // Terminals Manager
+                "mhutchie.git-graph", // Git Graph
+                "oderwat.indent-rainbow" // indent-rainbow
+            ],
+            "settings": {
+            }
+        }
+    }
+}

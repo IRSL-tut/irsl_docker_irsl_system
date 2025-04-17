@@ -1,0 +1,50 @@
+{
+    "autorun": true,
+    "autokill": true,
+    "terminals": [
+      {
+        "name": "terminal0",
+        "description": "custom terminal0",
+        "commands": [
+            "/irsl_entrypoint.sh bash"
+          ]
+      },
+      {
+        "name": "jupyter",
+        "description": "run Jupyter Lab",
+        "command": "if [ ${__IS_DOCKER__} ]; then jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=8888 /userdir --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''; fi",
+        "split": "terminal0"
+      },
+      {
+        "name": "terminal1",
+        "description": "custom terminal1",
+        "commands": [
+          "/irsl_entrypoint.sh bash"
+        ],
+        "focus": true
+      },
+      {
+        "name": "terminal2",
+        "description": "custom terminal2",
+        "commands": [
+          "/irsl_entrypoint.sh bash"
+        ],
+        "split": "terminal1"
+      },
+      {
+        "name": "terminal3",
+        "description": "custom terminal3",
+        "commands": [
+          "/irsl_entrypoint.sh bash"
+        ],
+        "split": "terminal1"
+      },
+      {
+        "name": "terminal4",
+        "description": "custom terminal4",
+        "commands": [
+          "/irsl_entrypoint.sh bash"
+        ]
+      }
+    ]
+  }
