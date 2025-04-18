@@ -4,7 +4,6 @@ services:
     docker_irsl_system_nogpu:
         image: repo.irsl.eiiris.tut.ac.jp/irsl_system:noetic
         environment:
-            - PYTHONPATH=/choreonoid_ws/install/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages:/choreonoid_ws/install/lib/choreonoid-2.3/python:/userdir
             - DOCKER_ROS_SETUP=/choreonoid_ws/install/setup.bash
             - ROS_IP=localhost
             - ROS_MASTER_URI=http://localhost:11311
