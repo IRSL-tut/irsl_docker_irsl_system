@@ -19,6 +19,7 @@ _REPO="repo.irsl.eiiris.tut.ac.jp/"
 MOUNT_OPTION=""
 _DOCKER_OPT=""
 _ROS_IP=
+_ROS_HOSTNAME=
 _ROS_MASTER_URI=
 
 while [[ $# -gt 0 ]]; do
@@ -105,6 +106,11 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
             ;;
+        --ros-hostname)
+            _ROS_HOSTNAME="$2"
+            shift
+            shift
+            ;;
         --ros-master-uri)
             _ROS_MASTER_URI="$2"
             shift
@@ -188,6 +194,7 @@ OPT=$OPT \
 NO_GPU=$_NO_GPU \
 USE_USER=$_USE_USER \
 ARG_ROS_IP=${_ROS_IP} \
+ARG_ROS_HOSTNAME=${_ROS_HOSTNAME} \
 ARG_ROS_MASTER_URI=${_ROS_MASTER_URI} \
 DOCKER_OPTION="${MOUNT_OPTION} ${_DOCKER_OPT}" \
 ${abs_dir}/files/run_docker_main.sh \

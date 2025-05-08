@@ -56,6 +56,9 @@ cat <<- _DOC_ >> dot.rosinstall
 - git:    
     local-name: irsl_raspi_controller
     uri: https://github.com/IRSL-tut/irsl_raspi_controller.git
+- git:    
+    local-name: irsl_python_lib
+    uri: https://github.com/IRSL-tut/irsl_python_lib.git    
 ### IRSL settings <<< ###
 _DOC_
 EOF
@@ -111,7 +114,7 @@ RUN  mkdir -p /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extens
 
 ENV PATH=$PATH:/user_scripts
 ENV JUPYTER_PATH=/jupyter
-ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-${CNOID_VERSION}/python
+ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-${CNOID_VERSION}/python:/choreonoid_ws/src/irsl_python_lib
 
 ### [HOTFIX]
 RUN if [ -e /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl ]; then  rm -rf /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl; fi && \
