@@ -34,7 +34,9 @@ if [ -n "$USE_USER" ]; then
     USER_SETTING=" -u $(id -u):$(id -g) -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro"
 fi
 
-_ROS_IP=${ARG_ROS_IP:-"localhost"}
+
+_ROS_IP=${ARG_ROS_IP:-"0.0.0.0"}
+_ROS_HOSTNAME=${ARG_ROS_HOSTNAME:-"localhost"}
 _ROS_MASTER_URI=${ARG_ROS_MASTER_URI:-"http://localhost:11311"}
 
 ##xhost +local:root
@@ -54,6 +56,7 @@ docker run \
     ${DOCKER_ENVIRONMENT_VAR} \
     --env="DOCKER_ROS_SETUP=${_ROS_SETUP}" \
     --env="ROS_IP=${_ROS_IP}" \
+    --env="ROS_HOSTNAME=${_ROS_HOSTNAME}" \
     --env="ROS_MASTER_URI=${_ROS_MASTER_URI}" \
     --env="DISPLAY"  \
     --env="QT_X11_NO_MITSHM=1" \
