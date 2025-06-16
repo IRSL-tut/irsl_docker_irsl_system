@@ -164,8 +164,7 @@ cur_var=""
 if [ "${PROG}" == "choreonoid" ]; then
     cur_var="choreonoid $*"
 elif [ "${PROG}" == "assembler" ]; then
-    RADIR=/choreonoid_ws/install/share/choreonoid-2.0/robot_assembler
-    cur_var="choreonoid $RADIR/layout/assembler.cnoid --assembler $RADIR/irsl/irsl_assembler_config.yaml --original-project $RADIR/layout/original.cnoid"
+    cur_var="/user_scripts/run_assembler.sh"
 elif [ "${PROG}" == "jupyter" ]; then
     cur_var="jupyter lab --allow-root --no-browser --ip=0.0.0.0 --port=${JUPYTER_PORT} --notebook-dir=${JUPYTER_DIR} --FileCheckpoints.checkpoint_dir=/tmp --ServerApp.token=''"
 elif [ "${PROG}" == "choreonoid-console" ]; then
