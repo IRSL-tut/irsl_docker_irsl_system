@@ -41,13 +41,15 @@ RUN apt update -q -qq && \
         python3 -m pip install --upgrade pip; \
     fi && \
     python3 -m pip install $PIP_OPT \
-                           ipython jedi jupyterlab jupyter-console  \
+                           'ipython<9' jedi jupyterlab jupyter-console  \
                            jedi-language-server \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
                            bash_kernel \
                            jupytext && \
     python3 -m bash_kernel.install
+### ipython should be 8.xx
+# IPython.core.oinspect.Inspector(theme_name="Linux") / python::args("theme_name")="Linux" 
 
 ### cache may be ignored after here
 COPY --from=builder /opt/xeus /opt/xeus
