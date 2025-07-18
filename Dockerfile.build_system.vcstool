@@ -66,7 +66,7 @@ EOF
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     (mkdir src; cd src; vcs import --recursive < ../dot.rosinstall) && \
     patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \
-    find /choreonoid_ws/src/prioritized_qp /choreonoid_ws/src/ik_solvers /choreonoid_ws/src/qp_solvers \
+    find src/prioritized_qp src/ik_solvers src/qp_solvers \
          -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
 
 ### add cgal to workspace for cnoid_cgal
@@ -74,10 +74,10 @@ RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.
 COPY files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
-RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 
 ## add jupyter_plugin
-RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 
 RUN apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
