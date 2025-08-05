@@ -55,7 +55,7 @@ RUN mkdir -p /ros_home/.byobu ; HOME=/ros_home byobu ls ; \
 
 ###
 RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
-        PIP_OPT="--break-system-packages"; \
+        PIP_OPT="--break-system-packages --ignore-installed"; \
     else \
         python3 -m pip install --upgrade pip; \
     fi && \
