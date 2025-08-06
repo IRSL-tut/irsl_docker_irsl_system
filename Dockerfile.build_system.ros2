@@ -32,65 +32,59 @@ RUN apt update -q -qq && \
 ## https://github.com/choreonoid/choreonoid/commit/5a1dbbfad83f9bc677761c3915e5a4614d559183
 ## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
 WORKDIR /choreonoid_ws
-# RUN wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_one_24.04/config/dot.rosinstall
+RUN wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_ros2_24.04/config/dot.rosinstall
 RUN <<EOF
 cat <<- _DOC_ >> dot.rosinstall
 ### IRSL settings >>> ###
 - git:
-    local-name: choreonoid
-    uri: https://github.com/IRSL-tut/choreonoid.git
-    #version: stable
-    version: devel_one_24.04
+    local-name: choreonoid_ros
+    uri: https://github.com/IRSL-tut/choreonoid_ros.git
+    version: stable
 - git:
-    local-name: irsl_choreonoid
-    uri: https://github.com/IRSL-tut/irsl_choreonoid.git
-    #version: stable
-    version: devel_one_24.04
-#- git:
-#    local-name: choreonoid_ros
-#    uri: https://github.com/IRSL-tut/choreonoid_ros.git
-#    #version: stable
-#    version: devel_one_24.04
-#- git:
-#    local-name: irsl_choreonoid_ros
-#    uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
+    local-name: irsl_choreonoid_ros
+    uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
+    version: main
 - git:
     local-name: cnoid_cgal
     uri: https://github.com/IRSL-tut/cnoid_cgal.git
-#- git:
-#    local-name: irsl_sim_environments
-#    uri: https://github.com/IRSL-tut/irsl_sim_environments.git
-#- git:    
-#    local-name: irsl_ros_msgs
-#    uri: https://github.com/IRSL-tut/irsl_ros_msgs.git
-#- git:    
-#    local-name: irsl_raspi_controller
-#    uri: https://github.com/IRSL-tut/irsl_raspi_controller.git
+- git:
+    local-name: irsl_sim_environments
+    uri: https://github.com/IRSL-tut/irsl_sim_environments.git
+- git:
+    local-name: irsl_ros_msgs
+    uri: https://github.com/IRSL-tut/irsl_ros_msgs.git
+- git:
+    local-name: irsl_raspi_controller
+    uri: https://github.com/IRSL-tut/irsl_raspi_controller.git
+- git:
+    local-name: irsl_python_lib
+    uri: https://github.com/IRSL-tut/irsl_python_lib.git
 ### IRSL settings <<< ###
 _DOC_
 EOF
 
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     (mkdir src; cd src; vcs import --recursive < ../dot.rosinstall) && \
-    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch
+    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \
+    sed -i -e "s@osqp-cpp src/osqp++.cc@osqp-cpp SHARED src/osqp++.cc@g" src/qp_solvers/osqp-cpp/osqp-cpp/CMakeLists.txt && \
+    find src/prioritized_qp src/ik_solvers src/qp_solvers \
+         -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
 
 ### add cgal to workspace for cnoid_cgal
-RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6/CGAL-5.6.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
+# CGAL-6 require boost 1.72 (not compatible with ubuntu20.04)
+RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
 COPY files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
-RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 
 ## add jupyter_plugin
-RUN (cd /choreonoid_ws/src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git -b devel_one_24.04)
-
-## add irsl_choreonoid
-### ??? WIP
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 
 RUN apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
     apt clean && \
-    rm -rf /var/lib/apt/lists/    
+    rm -rf /var/lib/apt/lists/
 #    if [ "$ROS_DISTRO" = "noetic" -o "$ROS_DISTRO" = "one" ]; then \
 #        apt install -q -qq -y python3-catkin-tools libreadline-dev ipython3; \
 #    else \
@@ -100,7 +94,7 @@ RUN apt update -q -qq && \
 #    rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
 
 ### Build using colcon
-RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-select choreonoid"
+RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-up-to irsl_choreonoid"
 
 ADD files/kernels /jupyter/kernels
 ADD userdir/ /user_scripts
@@ -112,13 +106,15 @@ RUN  mkdir -p /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extens
         "lsp": 700,\n\
         "CompletionProvider:context": 500,\n\
         "CompletionProvider:kernel": 1000\n\
-    }\n\
+    },\n\
+    "showDocumentationPanel": true,\n\
+    "autoCompletion": false\n\
 }' >> /ros_home/.jupyter/lab/user-settings/\@jupyterlab/completer-extension/manager.jupyterlab-settings && \
      chmod -R a+rwx /ros_home/.jupyter
 
 ENV PATH=$PATH:/user_scripts
 ENV JUPYTER_PATH=/jupyter
-ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-${CNOID_VERSION}/python
+ENV PYTHONPATH=/choreonoid_ws/install/lib/choreonoid-${CNOID_VERSION}/python:/choreonoid_ws/src/irsl_python_lib
 
 ### [HOTFIX]
 RUN if [ -e /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl ]; then  rm -rf /choreonoid_ws/install/share/choreonoid-${CNOID_VERSION}/robot_assembler/irsl; fi && \
