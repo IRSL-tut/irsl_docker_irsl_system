@@ -1,0 +1,26 @@
+ARG BASE_IMAGE=ubuntu:20.04
+
+FROM ${BASE_IMAGE}
+
+ARG PORTNUM=32222
+
+RUN apt-get update -q -qq && \
+    apt-get install -q -qq -y openssh-server && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
+
+RUN mkdir /var/run/sshd
+RUN echo 'root:irsl' | chpasswd
+RUN <<EOF
+cat <<- _DOC_ >> /etc/ssh/sshd_config
+### IRSL settings ###
+PasswordAuthentication yes
+PermitRootLogin yes
+Port ${PORTNUM}
+_DOC_
+EOF
+
+EXPOSE ${PORTNUM}
+#CMD ["/usr/sbin/sshd", "-D"]
+
+# docker run -p 32222:32222 -v $(pwd):/userdir xxxx -- /usr/sbin/sshd -D
