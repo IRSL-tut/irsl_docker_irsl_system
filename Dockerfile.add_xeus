@@ -36,7 +36,7 @@ RUN apt update -q -qq && \
     apt clean && \
     rm -rf /var/lib/apt/lists/ && \
     if [ "$(lsb_release -s -r)" = "24.04" ]; then \
-        PIP_OPT="--break-system-packages"; \
+        PIP_OPT="--break-system-packages --ignore-installed"; \
     else \
         python3 -m pip install --upgrade pip; \
     fi && \
