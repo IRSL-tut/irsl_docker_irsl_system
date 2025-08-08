@@ -46,7 +46,12 @@ RUN apt update -q -qq && \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
                            bash_kernel \
-                           jupytext && \
+                           jupytext \
+                           xeus_python_shell \
+                           ipywidgets \
+                           ipycanvas \
+                           sidecar \
+                           && \
     python3 -m bash_kernel.install
 ### ipython should be 8.xx
 # IPython.core.oinspect.Inspector(theme_name="Linux") / python::args("theme_name")="Linux" 
