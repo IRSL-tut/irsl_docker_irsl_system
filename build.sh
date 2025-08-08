@@ -61,7 +61,7 @@ fi
 
 if [ -n "${BUILD_DEVEL}" ]; then
     echo "!!!! !!!! Build Devel !!!! !!!!"
-    DOCKER_FILE=Dockerfile.build_system.vcstool
+    DOCKER_FILE=Dockerfile.build_system.devel
 fi
 
 echo "Build Image: ${TARGET_IMG}"
