@@ -68,15 +68,17 @@ echo "Build Image: ${TARGET_IMG}"
 
 set -x
 
+_PID_="$$"
+
 #PULL=--pull
 docker build . --progress=plain ${PULL} -f Dockerfile.add_xeus  \
        --build-arg BASE_IMAGE=${BASE_IMG} --build-arg BUILD_IMAGE=${XEUS_IMG} \
-       -t build_temp/build_system:0
+       -t build_temp/build_system:${_PID_}_0
 
 docker build . --progress=plain -f Dockerfile.add_extra_files  \
-       --build-arg BASE_IMAGE=build_temp/build_system:0 \
-       -t build_temp/build_system:1
+       --build-arg BASE_IMAGE=build_temp/build_system:${_PID_}_0 \
+       -t build_temp/build_system:${_PID_}_1
 
 docker build . ${DOCKER_OPT} -f ${DOCKER_FILE} \
-       --build-arg BASE_IMAGE=build_temp/build_system:1 \
+       --build-arg BASE_IMAGE=build_temp/build_system:${_PID_}_1 \
        -t ${TARGET_IMG}
