@@ -54,11 +54,8 @@ if [ -n ${NO_CACHE} ]; then
     DOCKER_OPT="--no-cache ${DOCKER_OPT}"
 fi
 
-DOCKER_FILE=Dockerfile.build_system.vcstool
-if [ ${ROS_DISTRO_} == "humble" -o ${ROS_DISTRO_} == "jazzy" ]; then
-    DOCKER_FILE=Dockerfile.build_system.ros2
-fi
 
+DOCKER_FILE=Dockerfile.build_system.merged
 if [ -n "${BUILD_DEVEL}" ]; then
     echo "!!!! !!!! Build Devel !!!! !!!!"
     DOCKER_FILE=Dockerfile.build_system.devel

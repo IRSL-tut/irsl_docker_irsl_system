@@ -72,7 +72,7 @@ RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
 
 ### add cgal to workspace for cnoid_cgal
 # CGAL-6 require boost 1.72 (not compatible with ubuntu20.04)
-RUN (cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
+RUN (cd src; mkdir cgal; wget -q https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
 COPY files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
