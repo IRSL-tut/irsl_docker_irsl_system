@@ -83,7 +83,7 @@ COPY files/cgal_package.xml src/cgal/package.xml
 RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 
 ## add jupyter_plugin
-RUN (cd src/choreonoid/ext; git clone -b devel_xeus_python https://github.com/IRSL-tut/jupyter_plugin.git)
+RUN (cd src/choreonoid/ext; git clone -b original_execution https://github.com/IRSL-tut/jupyter_plugin.git)
 
 RUN apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
