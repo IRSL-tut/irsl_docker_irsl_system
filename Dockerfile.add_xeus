@@ -41,7 +41,7 @@ RUN apt update -q -qq && \
         python3 -m pip install --upgrade pip; \
     fi && \
     python3 -m pip install $PIP_OPT \
-                           'ipython<9' jedi jupyterlab jupyter-console  \
+                           ipython jedi jupyterlab jupyter-console  \
                            jedi-language-server \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
