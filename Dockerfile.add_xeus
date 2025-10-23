@@ -56,6 +56,32 @@ RUN apt update -q -qq && \
 ### ipython should be 8.xx
 # IPython.core.oinspect.Inspector(theme_name="Linux") / python::args("theme_name")="Linux" 
 
+### patch to jupyter_console/ptshell.py
+RUN <<EOF
+dir=$(cat - << _DOC_ | python3 -
+import sys
+for s in sys.path:
+  if '/usr/local/lib' in s:
+    print(s)
+    break
+_DOC_
+)
+cd $dir
+cat - << _DOC_ | patch -p0
+--- jupyter_console/ptshell.py	2025-10-07 22:50:59.079193305 +0900
++++ jupyter_console/ptshell.py	2025-10-07 22:50:59.079193305 +0900
+@@ -856,6 +856,8 @@
+             sub_msg = run_sync(self.client.iopub_channel.get_msg)()
+             msg_type = sub_msg['header']['msg_type']
+ 
++            if msg_type == 'iopub_welcome': ### HOTFIX
++                return
+             # Update execution_count in case it changed in another session
+             if msg_type == "execute_input":
+                 self.execution_count = int(sub_msg["content"]["execution_count"]) + 1
+_DOC_
+EOF
+
 ### cache may be ignored after here
 COPY --from=builder /opt/xeus /opt/xeus
 
