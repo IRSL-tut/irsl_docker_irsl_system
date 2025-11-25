@@ -94,6 +94,7 @@ RUN apt update -q -qq && \
     else \
         apt install -q -qq -y python-catkin-tools libreadline-dev ; \
     fi && \
+    apt install -q -qq -y libpulse-dev libsndfile-dev gstreamer1.0-libav libgstreamer-plugins-base1.0-dev libgstreamer1.0-dev && \
     rosdep update -y -q -r && \
     rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal && \
     apt clean && \
@@ -106,7 +107,7 @@ RUN apt update -q -qq && \
 ### Build using colcon
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-up-to irsl_choreonoid"
 RUN if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then \
-    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1" ; \
+    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1" ; \
     else \
     /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-up-to irsl_choreonoid" ; \
     fi
