@@ -1,0 +1,22 @@
+ARG BASE_IMAGE=ubuntu:24.04
+
+FROM ${BASE_IMAGE}
+
+RUN apt-get update -q -qq && \
+    apt-get install -q -qq -y curl lsb-release gnupg && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
+
+RUN <<EOF
+#
+curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg
+#
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null
+#
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-prerelease $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/gazebo-prerelease.list > /dev/null
+EOF
+
+RUN apt-get update -q -qq && \
+    apt-get install -q -qq -y gz-jetty gz-jetty-sdformat gz-jetty-sdformat-python && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/
