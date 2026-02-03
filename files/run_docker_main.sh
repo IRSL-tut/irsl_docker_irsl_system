@@ -8,7 +8,7 @@ mtdir=${MOUNTED_DIR:-$DEFAULT_USER_DIR}
 
 _ROS_SETUP=${DOCKER_ROS_SETUP:-"/choreonoid_ws/install/setup.bash"}
 
-VAR=${@:-"bash"}
+VAR=${@:-"bash --rcfile /irsl_entryrc"}
 if [ $# -eq 0 -a -z "$OPT" ]; then
     OPT=-it
 fi
