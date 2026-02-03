@@ -1,0 +1,11 @@
+{
+    "display_name": "Choreonoid(IRSL)",
+    "argv": [
+        "choreonoid",
+        "--jupyter-connection",
+        "{connection_file}",
+        "--jupyter-initialization-script",
+        "/choreonoid_ws/install/share/irsl_choreonoid/sample/irsl_import.py"
+    ],
+    "language": "python"
+}
