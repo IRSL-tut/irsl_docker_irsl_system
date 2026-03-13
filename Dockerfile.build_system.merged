@@ -38,16 +38,23 @@ RUN if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then \
       wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_ros2_24.04/config/dot.rosinstall ; \
     fi
 RUN <<EOF
+if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
+    CNOID_ROS='stable';
+    IRSL_CNOID_ROS='main';
+else
+    CNOID_ROS=devel_20260312;
+    IRSL_CNOID_ROS='devel_ros2_24.04';
+fi
 cat <<- _DOC_ >> dot.rosinstall
 ### IRSL settings >>> ###
 - git:
     local-name: choreonoid_ros
     uri: https://github.com/IRSL-tut/choreonoid_ros.git
-    version: stable
+    version: ${CNOID_ROS}
 - git:
     local-name: irsl_choreonoid_ros
     uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
-    version: main
+    version: ${IRSL_CNOID_ROS}
 - git:
     local-name: cnoid_cgal
     uri: https://github.com/IRSL-tut/cnoid_cgal.git
