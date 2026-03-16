@@ -32,17 +32,14 @@ RUN apt update -q -qq && \
 ## https://github.com/choreonoid/choreonoid/commit/5a1dbbfad83f9bc677761c3915e5a4614d559183
 ## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
 WORKDIR /choreonoid_ws
-RUN if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then \
-      wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall ; \
-    else \
-      wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_ros2_24.04/config/dot.rosinstall ; \
-    fi
 RUN <<EOF
 if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
+    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall  -O dot.rosinstall
     CNOID_ROS='stable';
     IRSL_CNOID_ROS='main';
 else
-    CNOID_ROS=devel_20260312;
+    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.ros2install -O dot.rosinstall
+    CNOID_ROS='devel_20260312';
     IRSL_CNOID_ROS='devel_ros2_24.04';
 fi
 cat <<- _DOC_ >> dot.rosinstall

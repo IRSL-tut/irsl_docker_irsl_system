@@ -8,17 +8,13 @@ set -e
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
 ### install choreonoid
-if [ "$ROS_DISTRO" = "noetic" -o "$ROS_DISTRO" = "one" ]; then
-    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall
-else
-    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/devel_ros2_24.04/config/dot.rosinstall
-fi
-
 if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
+    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall  -O dot.rosinstall
     CNOID_ROS='stable';
     IRSL_CNOID_ROS='main';
 else
-    CNOID_ROS=devel_20260312;
+    wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.ros2install -O dot.rosinstall
+    CNOID_ROS='devel_20260312';
     IRSL_CNOID_ROS='devel_ros2_24.04';
 fi
 cat <<- _DOC_ >> dot.rosinstall
@@ -26,11 +22,11 @@ cat <<- _DOC_ >> dot.rosinstall
 - git:
     local-name: choreonoid_ros
     uri: https://github.com/IRSL-tut/choreonoid_ros.git
-    version: stable
+    version: ${CNOID_ROS}
 - git:
     local-name: irsl_choreonoid_ros
     uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
-    version: main
+    version: ${IRSL_CNOID_ROS}
 - git:
     local-name: cnoid_cgal
     uri: https://github.com/IRSL-tut/cnoid_cgal.git
@@ -77,5 +73,8 @@ sudo apt update -q -qq && \
     rosdep update -y -q -r && \
     rosdep install -y -q -r --ignore-src --from-path src/choreonoid_ros src/irsl_choreonoid_ros src/cnoid_cgal
 
+## build using catkin
 # /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1"
+
+## build using ament
 # /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-up-to irsl_choreonoid_ros"
