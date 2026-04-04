@@ -78,6 +78,7 @@ jobs:
           else
             echo "IMAGE_SRC=${IMAGE_SRC}${BUILD_DEVEL}" >> $GITHUB_ENV ;
           fi
+          echo "DEPLOY_TAG=${{ env.UBUNTU_VER }}_${{ env.ROS_DISTRO }}" >> $GITHUB_ENV ;
       - name: DebugMessage
         run: |
           echo "ref: ${{github.ref}} / repo: ${{github.repository}} / ref_nm: ${{github.ref_name}} / head_ref: ${{github.head_ref}}"
@@ -90,23 +91,27 @@ jobs:
         env:
           NO_CACHE: 'YES'
           BUILD_ROS: ${{ env.ROS_DISTRO }}
+          BUILD_UBUNTU: ${{ env.UBUNTU_VER }}
         run: ./build.sh actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Build (cached)
         if: github.event_name != 'workflow_dispatch'
         env:
           NO_CACHE: ''
           BUILD_ROS: ${{ env.ROS_DISTRO }}
+          BUILD_UBUNTU: ${{ env.UBUNTU_VER }}
         run: ./build.sh actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG}
       - name: Deploy
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
-          docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          _IMG=${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}:${{ env.DEPLOY_TAG }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${_IMG}
+          docker push ${_IMG}
       - name: Deploy (Devel)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
-          docker push ${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          _IMG=${{ env.DOCKER_DEPLOY }}${{ env.IMAGE_NAME }}_devel:${{ env.DEPLOY_TAG }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${_IMG}
+          docker push ${_IMG}
       - name: Log in to Docker Hub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
@@ -116,10 +121,12 @@ jobs:
       - name: Deploy(HUB)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL != 'devel'
         run: |
-          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
-          docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.ROS_DISTRO }}
+          _IMG=${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}:${{ env.DEPLOY_TAG }}
+          docker tag    actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${_IMG}
+          docker push ${_IMG}
       - name: Deploy(HUB, devel)
         if: github.event_name != 'pull_request' && env.BUILD_DEVEL == 'devel'
         run: |
-          docker tag actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
-          docker push ${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.ROS_DISTRO }}
+          _IMG=${{ env.DOCKER_HUB }}${{ env.IMAGE_NAME }}_devel:${{ env.DEPLOY_TAG }}
+          docker tag actions/irsl_system_${{ matrix.build_target }}_${IMAGE_SRC}:${IMAGE_TAG} ${_IMG}
+          docker push ${_IMG}

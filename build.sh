@@ -47,7 +47,7 @@ _REPO=${REPO:-repo.irsl.eiiris.tut.ac.jp/}
 XEUS_IMG=${_REPO}xeus:${CUR_UBUNTU}
 BASE_IMG=${INPUT_IMAGE:-${_REPO}irsl_base:opengl_${CUR_UBUNTU}_${ROS_DISTRO_}}
 
-DEFAULT_IMG=${_REPO}irsl_system:${ROS_DISTRO_}
+DEFAULT_IMG=${_REPO}irsl_system:${CUR_UBUNTU}_${ROS_DISTRO_}
 TARGET_IMG=${1:-${DEFAULT_IMG}}
 
 if [ -n ${NO_CACHE} ]; then
