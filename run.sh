@@ -147,9 +147,9 @@ if [ $# -gt 0 ]; then
 fi
 
 ### devel
-dimage="${_REPO}irsl_system:noetic"
+dimage="${_REPO}irsl_system:24.04_one"
 if [ -n "${USE_DEVEL}" ]; then
-    dimage="${_REPO}irsl_system_devel:noetic"
+    dimage="${_REPO}irsl_system_devel:24.04_one"
 fi
 if [ -n "${IMAGE_NAME}" ]; then
     dimage="${IMAGE_NAME}"
