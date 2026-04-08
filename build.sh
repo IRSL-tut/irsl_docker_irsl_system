@@ -12,7 +12,7 @@ set -e
 # NO_CACHE [ '' ]
 
 ## noetic or melodic
-ROS_DISTRO_=${BUILD_ROS:-"noetic"}
+ROS_DISTRO_=${BUILD_ROS:-"one"}
 CUR_UBUNTU=${BUILD_UBUNTU:-""}
 if [ ${ROS_DISTRO_} == "humble" ]; then
     if [ -z "${CUR_UBUNTU}" ]; then

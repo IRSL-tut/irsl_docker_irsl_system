@@ -6,7 +6,7 @@ RUN <<EOF
 apt update -q -qq
 apt install -q -qq -y \
    vim-tiny net-tools iputils-ping iproute2 traceroute \
-   graphviz-dev byobu \
+   graphviz-dev byobu emacs \
    libbullet-extras-dev \
    ros-${ROS_DISTRO}-desktop-full                \
    ros-${ROS_DISTRO}-xacro                       \
@@ -58,6 +58,10 @@ EOF
 RUN mkdir -p /ros_home/.byobu ; HOME=/ros_home byobu ls ; \
     echo -e "escape ^Tt\nbindkey \"^A\"" >> /ros_home/.byobu/keybindings ; \
     echo -e "set -g prefix ^T\nset -g prefix2 ^O\nbind t send-prefix\nunbind-key -n C-a\n"  > /ros_home/.byobu/keybindings.tmux
+
+### emacs settings
+RUN mkdir -p /ros_home/.emacs.d
+COPY files/dot.emacs /ros_home/.emacs.d/init.el
 
 ###
 RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
