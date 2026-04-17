@@ -8,7 +8,7 @@ version: "3.0"
 # JUPYTER_TOKEN = ''  ## token (password) to login jupyter
 # DOCKER_DISPLAY = 10
 # REPO      = irslrepo/
-# ARG_IMAGE = irsl_system:noetic
+# ARG_IMAGE = irsl_system:24.04_one
 # NETWORK_MODE = bridge
 # ARG_ROS_IP   = localhost
 # ARG_ROS_MSATER_URI = http://localhost:11311
@@ -32,7 +32,7 @@ services:
     volumes:
       - '/tmp/.X11-unix:/tmp/.X11-unix'
   main:
-    image: ${REPO:-irslrepo/}${ARG_IMAGE:-irsl_system:noetic}
+    image: ${REPO:-irslrepo/}${ARG_IMAGE:-irsl_system:24.04_one}
     security_opt:
       - seccomp:unconfined
     ports:
