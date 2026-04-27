@@ -16,7 +16,7 @@ version: "3.0"
 ###
 services:
   xserver:
-    image: ${REPO:-irslrepo/}browser_vnc:20.04
+    image: ${REPO:-irslrepo/}browser_vnc:24.04
     # ipc: host
     security_opt:
       - seccomp:unconfined
