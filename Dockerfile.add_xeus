@@ -41,13 +41,14 @@ RUN apt update -q -qq && \
         python3 -m pip install --upgrade pip; \
     fi && \
     python3 -m pip install $PIP_OPT \
-                           ipython jedi jupyterlab jupyter-console  \
+                           'ipython<9.13.0' \
+                           jedi jupyterlab jupyter-console  \
                            jedi-language-server \
                            jupyterlab-lsp \
                            python-lsp-server[all] \
                            bash_kernel \
                            jupytext \
-                           xeus_python_shell \
+                           'xeus_python_shell<0.7.0' \
                            ipywidgets \
                            ipycanvas \
                            sidecar \
