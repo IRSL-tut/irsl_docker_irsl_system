@@ -11,7 +11,7 @@ version: "3.0"
 # ARG_IMAGE = irsl_system:24.04_one
 # NETWORK_MODE = bridge
 # ARG_ROS_IP   = localhost
-# ARG_ROS_MSATER_URI = http://localhost:11311
+# ARG_ROS_MASTER_URI = http://localhost:11311
 # DOCKER_ROS_SETUP   = /choreonoid_ws/install/setup.bash
 ###
 services:
