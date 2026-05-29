@@ -69,5 +69,10 @@ RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
     else \
         python3 -m pip install --upgrade pip; \
     fi && \
-    python3 -m pip install $PIP_OPT paramiko scp scipy matplotlib networkx pandas graphviz pygraphviz
+    python3 -m pip install $PIP_OPT \
+    'numpy<2.0' \
+    scipy \
+    paramiko scp  \
+    matplotlib networkx pandas graphviz pygraphviz
+#numpy compatibility with ROS
 #opencv-python : python3-opencv installed by ROS
