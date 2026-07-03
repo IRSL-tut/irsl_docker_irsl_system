@@ -63,6 +63,9 @@ cp ${SCRIPT_DIR}/files/cgal_package.xml src/cgal/package.xml
 ## add jupyter_plugin
 (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 
+## add irsl_cnoid_plugin
+(cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/irsl_cnoid_plugin.git)
+
 sudo apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
     if [ "$ROS_DISTRO" = "noetic" -o "$ROS_DISTRO" = "one" ]; then \
