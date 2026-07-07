@@ -53,7 +53,7 @@ source /opt/ros/${ROS_DISTRO}/setup.bash && \
          -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
 
 ### add cgal to workspace for cnoid_cgal
-(cd src; mkdir cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
+(cd src; mkdir -p cgal; wget https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
 #COPY files/cgal_package.xml src/cgal/package.xml
 cp ${SCRIPT_DIR}/files/cgal_package.xml src/cgal/package.xml
 
@@ -70,6 +70,8 @@ sudo apt update -q -qq && \
     src/choreonoid/misc/script/install-requisites-ubuntu-$(lsb_release -s -r).sh && \
     if [ "$ROS_DISTRO" = "noetic" -o "$ROS_DISTRO" = "one" ]; then \
         sudo apt install -q -qq -y python3-catkin-tools libreadline-dev ; \
+    elif [ "$ROS_DISTRO" = "jazzy" -o "$ROS_DISTRO" = "humble" -o "$ROS_DISTRO" = "rolling" ]; then \
+        sudo apt install -q -qq -y libreadline-dev ; \
     else \
         sudo apt install -q -qq -y python-catkin-tools libreadline-dev ; \
     fi && \
