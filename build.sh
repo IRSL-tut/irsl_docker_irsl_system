@@ -62,7 +62,8 @@ fi
 DOCKER_FILE=Dockerfile.build_system.merged
 if [ -n "${BUILD_DEVEL}" ]; then
     echo "!!!! !!!! Build Devel !!!! !!!!"
-    DOCKER_FILE=Dockerfile.build_system.devel
+    # DOCKER_FILE=Dockerfile.build_system.devel
+    DOCKER_FILE=Dockerfile.build_system.merged
 fi
 
 echo "Build Image: ${TARGET_IMG}"
