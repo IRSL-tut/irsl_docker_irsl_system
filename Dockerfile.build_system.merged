@@ -94,7 +94,7 @@ EOF
 COPY files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
-RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git -b add_virtual_attach)
 
 ## add jupyter_plugin
 RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
