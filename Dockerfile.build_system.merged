@@ -35,19 +35,23 @@ WORKDIR /choreonoid_ws
 RUN <<EOF
 if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
     wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall  -O dot.rosinstall
-    CNOID_ROS='stable';
+    CNOID_ROS_VER='stable';
+    CNOID_ROS_NAME='choreonoid_ros';
+    CNOID_ROS_REPO='https://github.com/IRSL-tut/choreonoid_ros.git';
     IRSL_CNOID_ROS='main';
 else
     wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.ros2install -O dot.rosinstall
-    CNOID_ROS='devel_20260312';
+    CNOID_ROS_VER='devel';
+    CNOID_ROS_NAME='choreonoid_ros2';
+    CNOID_ROS_REPO='https://github.com/IRSL-tut/choreonoid_ros2.git';
     IRSL_CNOID_ROS='devel_ros2_24.04';
 fi
 cat <<- _DOC_ >> dot.rosinstall
 ### IRSL settings >>> ###
 - git:
-    local-name: choreonoid_ros
-    uri: https://github.com/IRSL-tut/choreonoid_ros.git
-    version: ${CNOID_ROS}
+    local-name: ${CNOID_ROS_NAME}
+    uri: ${CNOID_ROS_REPO}
+    version: ${CNOID_ROS_VER}
 - git:
     local-name: irsl_choreonoid_ros
     uri: https://github.com/IRSL-tut/irsl_choreonoid_ros.git
