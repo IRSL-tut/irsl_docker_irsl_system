@@ -77,10 +77,10 @@ EOF
 
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
     (mkdir src; cd src; vcs import --recursive < ../dot.rosinstall) && \
-    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \
     sed -i -e "s@osqp-cpp src/osqp++.cc@osqp-cpp SHARED src/osqp++.cc@g" src/qp_solvers/osqp-cpp/osqp-cpp/CMakeLists.txt && \
     find src/prioritized_qp src/ik_solvers src/qp_solvers \
          -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
+##  remove: patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \ ## merge this patch to irsl/stable
 
 ### add cgal to workspace for cnoid_cgal
 # CGAL-6 require boost 1.72 (not compatible with ubuntu20.04)
