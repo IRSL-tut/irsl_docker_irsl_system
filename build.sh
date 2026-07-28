@@ -22,6 +22,10 @@ elif [ ${ROS_DISTRO_} == "jazzy" ]; then
     if [ -z "${CUR_UBUNTU}" ]; then
         CUR_UBUNTU="24.04"
     fi
+elif [ ${ROS_DISTRO_} == "lyrical" ]; then
+    if [ -z "${CUR_UBUNTU}" ]; then
+        CUR_UBUNTU="26.04"
+    fi
 elif [ ${ROS_DISTRO_} == "rolling" ]; then
     if [ -z "${CUR_UBUNTU}" ]; then
         CUR_UBUNTU="24.04"
