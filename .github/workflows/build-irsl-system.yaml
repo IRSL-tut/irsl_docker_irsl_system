@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_target: [ 20.04, 24.04, 24.04one ] ##
+        build_target: [ 20.04, 24.04, 26.04, 24.04one ] ##
     runs-on: self-hosted
     env:
       IMAGE_NAME: irsl_system
