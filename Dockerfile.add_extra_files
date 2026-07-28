@@ -64,7 +64,7 @@ RUN mkdir -p /ros_home/.emacs.d
 COPY files/dot.emacs /ros_home/.emacs.d/init.el
 
 ###
-RUN if [ "$(lsb_release -s -r)" = "24.04" ]; then \
+RUN if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then \
         PIP_OPT="--break-system-packages --ignore-installed"; \
     else \
         python3 -m pip install --upgrade pip; \
