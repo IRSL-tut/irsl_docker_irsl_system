@@ -1,0 +1,50 @@
+## docker build . -f Dockerfile.add_pytorch --build-arg BASE_IMAGE=repo.irsl.eiiris.tut.ac.jp/irsl_system:24.04_one  --build-arg TORCH_VER=2.12.1 --build-arg CUDA_VER=13.0 -t add_pytorch
+ARG BASE_IMAGE=ubntu26.04
+FROM ${BASE_IMAGE}
+
+ARG TORCH_VER=2.9.0
+ARG CUDA_VER=12.6
+
+RUN pip install --break-system-packages --ignore-installed --upgrade setuptools
+
+RUN <<EOF
+CUDA_OPT=''
+if [ ${CUDA_VER} == '11.8' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu118'
+elif [ ${CUDA_VER} == '12.1' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu121'
+elif [ ${CUDA_VER} == '12.4' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu124'
+elif [ ${CUDA_VER} == '12.6' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu126'
+elif [ ${CUDA_VER} == '12.8' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu128'
+elif [ ${CUDA_VER} == '13.0' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu130'
+elif [ ${CUDA_VER} == '13.2' ]; then
+    CUDA_OPT='--index-url https://download.pytorch.org/whl/cu132'
+fi
+# source /irsl_venv/bin/activate
+if [ ${TORCH_VER} == '2.7.1' ]; then
+    pip install --break-system-packages torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 torchcodec==0.5 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.8.0' ]; then
+    pip install --break-system-packages torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 torchcodec==0.7 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.9.0' ]; then
+    pip install --break-system-packages torch==2.9.0 torchvision==0.24.0 torchaudio==2.9.0 torchcodec==0.9 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.9.1' ]; then
+    pip install --break-system-packages torch==2.9.1 torchvision==0.24.1 torchaudio==2.9.1 torchcodec==0.9 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.10.0' ]; then
+    pip install --break-system-packages torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 torchcodec==0.9 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.11.0' ]; then
+    pip install --break-system-packages torch==2.11.0 torchvision==0.26.0 torchaudio==2.11.0 torchcodec==0.11 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.12.0' ]; then
+    pip install --break-system-packages torch==2.12.0 torchvision==0.27.0 torchcodec==0.12 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.12.1' ]; then
+    pip install --break-system-packages torch==2.12.1 torchvision==0.27.1 torchcodec==0.13 ${CUDA_OPT}
+elif [ ${TORCH_VER} == '2.13.0' ]; then
+    pip install --break-system-packages torch torchvision torchcodec==0.14 ${CUDA_OPT}
+else
+    set -e
+    [ 0 -eq 1 ] ## failed
+fi
+EOF
