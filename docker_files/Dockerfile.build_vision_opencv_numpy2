@@ -1,0 +1,38 @@
+
+ARG BASE_IMAGE=repo.irsl.eiiris.tut.ac.jp/irsl_base:opengl_24.04_one
+FROM ${BASE_IMAGE}
+
+RUN <<EOF
+### START
+apt update -q -qq
+#
+dpkg --force-all -r python3-numpy
+#
+curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --break-system-packages
+#
+pip install --break-system-packages numpy scipy opencv-python
+#
+apt install -q -qq -y python3-numpy
+apt install -q -qq -y git cmake libopencv-dev libboost-python-dev
+###
+apt clean
+rm -rf /var/lib/apt/lists/
+### END
+EOF
+
+WORKDIR /build
+RUN <<EOF
+### START
+source /opt/ros/${ROS_DISTRO}/setup.bash
+git clone https://github.com/ros-perception/vision_opencv.git -b noetic
+cd vision_opencv/cv_bridge
+mkdir build
+cd build
+cmake ..
+make
+### END
+EOF
+
+##
+## /build/vision_opencv/cv_bridge/build/devel/lib/python3/dist-packages/cv_bridge/boost/cv_bridge_boost.so
+## copy to /opt/ros/$ROS_DISTRO/lib/python3/dist-packages/cv_bridge/boost/cv_bridge_boost.so
