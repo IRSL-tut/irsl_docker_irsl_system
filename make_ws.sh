@@ -57,6 +57,7 @@ source /opt/ros/${ROS_DISTRO}/setup.bash && \
 ##    patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \
 
 ### add cgal to workspace for cnoid_cgal
+# CGAL-6 require boost 1.72 (not compatible with ubuntu20.04)
 if $(echo -e "$(lsb_release -s -r)\n20.04" | sort -C -V); then \
     (cd src; mkdir cgal; wget -q https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
 else
@@ -67,10 +68,8 @@ cp ${SCRIPT_DIR}/files/cgal_package.xml src/cgal/package.xml
 
 ## add robot_assembler
 (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
-
 ## add jupyter_plugin
 (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
-
 ## add irsl_cnoid_plugin
 (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/irsl_cnoid_plugin.git)
 
