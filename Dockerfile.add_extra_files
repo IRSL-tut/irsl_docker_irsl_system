@@ -68,6 +68,7 @@ RUN if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then \
         PIP_OPT="--break-system-packages --ignore-installed"; \
     else \
         python3 -m pip install --upgrade pip; \
+        python3 -m pip install 'cmake<4.0'; \
     fi && \
     python3 -m pip install $PIP_OPT \
     'numpy<2.0' \
