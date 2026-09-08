@@ -73,6 +73,10 @@ cat <<- _DOC_ >> dot.rosinstall
 - git:
     local-name: irsl_python_lib
     uri: https://github.com/IRSL-tut/irsl_python_lib.git
+- git:
+    local-name: assimp
+    uri: https://github.com/IRSL-tut/assimp.git
+    version: v6.0.5_patched
 ### IRSL settings <<< ###
 _DOC_
 EOF
