@@ -60,6 +60,7 @@ docker run \
     --env="ROS_MASTER_URI=${_ROS_MASTER_URI}" \
     --env="DISPLAY"  \
     --env="QT_X11_NO_MITSHM=1" \
+    --env="IRSL_ACTIVATE_ROS=yes" \
     --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
     --name=${cname} \
     --volume="${mtdir}:/userdir" \
