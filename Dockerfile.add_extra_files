@@ -8,6 +8,7 @@ apt install -q -qq -y \
    vim-tiny net-tools iputils-ping iproute2 traceroute \
    graphviz-dev byobu emacs \
    libbullet-extras-dev \
+   python3-vcstool python3-venv \
    ros-${ROS_DISTRO}-desktop-full                \
    ros-${ROS_DISTRO}-xacro                       \
    ros-${ROS_DISTRO}-cv-bridge                   \
@@ -73,6 +74,8 @@ RUN if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then \
     'numpy<2.0' \
     scipy \
     paramiko scp  \
-    matplotlib networkx pandas graphviz pygraphviz
+    matplotlib pandas \
+    'drawsvg[raster]' \
+    networkx graphviz pygraphviz
 #numpy compatibility with ROS
 #opencv-python : python3-opencv installed by ROS
