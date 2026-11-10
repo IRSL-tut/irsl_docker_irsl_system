@@ -5,7 +5,7 @@ FROM ${BASE_IMAGE}
 RUN <<EOF
 apt update -q -qq
 apt install -q -qq -y \
-   vim-tiny net-tools iputils-ping iproute2 traceroute \
+   vim-tiny net-tools iputils-ping iproute2 traceroute aptitude \
    graphviz-dev byobu emacs \
    libbullet-extras-dev \
    python3-vcstool python3-venv \
@@ -38,6 +38,7 @@ if [ "${ROS_DISTRO}" != "jazzy" -a "${ROS_DISTRO}" != "humble" -a "${ROS_DISTRO}
      ;
 else
    apt install -q -qq -y \
+     ros-${ROS_DISTRO}-rmw-cyclonedds-cpp          \
      ros-${ROS_DISTRO}-ros2-controllers            \
      ros-${ROS_DISTRO}-joint-limits                \
      ros-${ROS_DISTRO}-nav2-amcl                   \
