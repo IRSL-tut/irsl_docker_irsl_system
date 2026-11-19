@@ -33,6 +33,8 @@ RUN apt update -q -qq && \
 ## https://github.com/choreonoid/choreonoid_ros/commit/28ec82093a439e24c99e310472c5b9f7a95c583a
 WORKDIR /choreonoid_ws
 RUN <<EOF
+## setting source directory
+set -e
 if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
     wget https://raw.githubusercontent.com/IRSL-tut/irsl_choreonoid/main/config/dot.rosinstall  -O dot.rosinstall
     CNOID_ROS_VER='stable';
@@ -75,16 +77,20 @@ cat <<- _DOC_ >> dot.rosinstall
 _DOC_
 EOF
 
-RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
+RUN <<EOF
+source /opt/ros/${ROS_DISTRO}/setup.bash && \
     (mkdir src; cd src; vcs import --recursive < ../dot.rosinstall) && \
     sed -i -e "s@osqp-cpp src/osqp++.cc@osqp-cpp SHARED src/osqp++.cc@g" src/qp_solvers/osqp-cpp/osqp-cpp/CMakeLists.txt && \
     find src/prioritized_qp src/ik_solvers src/qp_solvers \
          -name CMakeLists.txt -exec sed -i -e s@-std=c++[0-9][0-9]@-std=c++17@g {} \;
+EOF
 ##  remove: patch -d src -p1 < src/irsl_choreonoid/config/choreonoid_closed_ik.patch && \ ## merge this patch to irsl/stable
 
 ### add cgal to workspace for cnoid_cgal
 # CGAL-6 require boost 1.72 (not compatible with ubuntu20.04)
 RUN <<EOF
+## add cgal
+set -e
 if $(echo -e "$(lsb_release -s -r)\n20.04" | sort -C -V); then \
     (cd src; mkdir cgal; wget -q https://github.com/CGAL/cgal/releases/download/v5.6.2/CGAL-5.6.2.tar.xz -O - | tar Jxf - --strip-components 1 -C cgal)
 else
@@ -93,14 +99,16 @@ fi
 EOF
 COPY files/cgal_package.xml src/cgal/package.xml
 
+RUN <<EOF
+## add repositories to choreonoid/ext
+set -e
 ## add robot_assembler
-RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
-
+(cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 ## add jupyter_plugin
-RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
-
+(cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 ## add irsl_cnoid_plugin
-RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/irsl_cnoid_plugin.git)
+(cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/irsl_cnoid_plugin.git)
+EOF
 
 RUN apt update -q -qq && \
     if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then \
@@ -128,11 +136,21 @@ RUN apt update -q -qq && \
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1"
 ### Build using colcon
 #RUN /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --packages-up-to irsl_choreonoid"
-RUN if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then \
-    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args -DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1" ; \
-    else \
-    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --cmake-args -DCMAKE_POLICY_VERSION_MINIMUM=3.5 --ament-cmake-args -DCMAKE_POLICY_VERSION_MINIMUM=3.5 --packages-up-to irsl_choreonoid_ros" ; \
-    fi
+
+RUN <<EOF
+## build ...
+set -e
+_CMAKE_ARGS_="-DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+if [ "${ROS_DISTRO}" == "noetic"  ]; then
+  _CMAKE_ARGS_="${_CMAKE_ARGS_} -DUSE_BUNDLED_FMTLIB=ON -DCMAKE_CXX_STANDARD=17"
+fi
+#
+if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then
+    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && catkin config --cmake-args ${_CMAKE_ARGS_} && catkin config --install && catkin build irsl_choreonoid irsl_choreonoid_ros cnoid_cgal irsl_sim_environments irsl_detection_msgs irsl_detection_srvs irsl_raspi_controller --no-status --no-notify -p 1" ;
+else
+    /bin/bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && colcon build --parallel-workers 1 --merge-install --event-handlers console_direct+ desktop_notification- log_command+ status- --cmake-args ${_CMAKE_ARGS_} --ament-cmake-args ${_CMAKE_ARGS_} --packages-up-to irsl_choreonoid_ros" ;
+fi
+EOF
 
 ADD files/kernels /jupyter/kernels
 ADD userdir/ /user_scripts
