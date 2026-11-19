@@ -78,6 +78,7 @@ docker build . --progress=plain ${PULL} -f Dockerfile.add_xeus  \
 
 docker build . --progress=plain -f Dockerfile.add_extra_files  \
        --build-arg BASE_IMAGE=build_temp/build_system:${_PID_}_0 \
+       --build-arg BUILD_DEVEL="${BUILD_DEVEL}" \
        -t build_temp/build_system:${_PID_}_1
 
 docker build . ${DOCKER_OPT} -f ${DOCKER_FILE} \

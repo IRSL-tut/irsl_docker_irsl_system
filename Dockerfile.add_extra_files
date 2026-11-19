@@ -1,6 +1,8 @@
 ARG BASE_IMAGE=ubuntu:24.04
 FROM ${BASE_IMAGE}
 
+ARG BUILD_DEVEL=""
+
 ###
 RUN <<EOF
 apt update -q -qq
@@ -66,17 +68,25 @@ RUN mkdir -p /ros_home/.emacs.d
 COPY files/dot.emacs /ros_home/.emacs.d/init.el
 
 ###
-RUN if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then \
-        PIP_OPT="--break-system-packages --ignore-installed"; \
-    else \
-        python3 -m pip install --upgrade pip; \
-    fi && \
-    python3 -m pip install $PIP_OPT \
-    'numpy<2.0' \
-    scipy \
-    paramiko scp  \
-    matplotlib pandas \
-    'drawsvg[raster]' \
-    networkx graphviz pygraphviz
+RUN <<EOF
+## pip install
+if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then
+    PIP_OPT="--break-system-packages --ignore-installed";
+else
+    python3 -m pip install --upgrade pip;
+fi
+_NUMPY_='numpy<2.0'
+if [ -n "${BUILD_DEVEL}" ]; then
+   _NUMPY_='numpy' ## may install version 2.0 or higher
+fi
+## install
+python3 -m pip install $PIP_OPT \
+${_NUMPY_} \
+scipy \
+paramiko scp  \
+matplotlib pandas \
+'drawsvg[raster]' \
+networkx pydot graphviz pygraphviz
+EOF
 #numpy compatibility with ROS
 #opencv-python : python3-opencv installed by ROS

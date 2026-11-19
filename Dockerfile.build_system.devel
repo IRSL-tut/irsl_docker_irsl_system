@@ -3,7 +3,7 @@
 ARG BASE_IMAGE=ros:ros-melodic-base
 FROM ${BASE_IMAGE}
 
-ARG CNOID_VERSION=2.3
+ARG CNOID_VERSION=2.5
 
 LABEL maintainer="IRSL-tut (https://github.com/IRSL-tut) <faculty@irsl.eiiris.tut.ac.jp>"
 
@@ -77,6 +77,7 @@ _DOC_
 ## for devel
 sed -i '1,4d' dot.rosinstall
 cat <<- _DOC_ >> dot.rosinstall
+## devel >>> ##
 - git:
     local-name: choreonoid
     uri: https://github.com/IRSL-tut/choreonoid.git
@@ -85,7 +86,8 @@ cat <<- _DOC_ >> dot.rosinstall
     local-name: assimp
     uri: https://github.com/IRSL-tut/assimp.git
     version: v6.0.6_patched
-_DOC_    
+## <<< devel ##
+_DOC_
 EOF
 
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
@@ -110,7 +112,7 @@ COPY files/cgal_package.xml src/cgal/package.xml
 RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/robot_assembler_plugin.git)
 
 ## add jupyter_plugin
-RUN (cd src/choreonoid/ext; git clone -b original_execution https://github.com/IRSL-tut/jupyter_plugin.git)
+RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/jupyter_plugin.git)
 
 ## add irsl_cnoid_plugin
 RUN (cd src/choreonoid/ext; git clone https://github.com/IRSL-tut/irsl_cnoid_plugin.git)
