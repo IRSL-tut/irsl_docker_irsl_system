@@ -160,9 +160,33 @@ RUN apt update -q -qq && \
 RUN <<EOF
 ## build ...
 set -e
-_CMAKE_ARGS_="-DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
-if [ "${ROS_DISTRO}" == "noetic"  ]; then
-  _CMAKE_ARGS_="${_CMAKE_ARGS_} -DUSE_BUNDLED_FMTLIB=ON -DCMAKE_CXX_STANDARD=17"
+_CMAKE_ARGS_="-DBUILD_TEST=ON -DBUILD_POSE_SEQ_PLUGIN=ON -DBUILD_BULLET_PLUGIN=ON -DBUILD_BALANCER_PLUGIN=ON -DBUILD_MOCAP_PLUGIN=ON -DBUILD_MEDIA_PLUGIN=ON"
+if [ "${ROS_DISTRO}" == "noetic"  ]; then ## for compiling choreonoid_2.5.0 under ubuntu20.04
+    wget https://github.com/Kitware/CMake/releases/download/v3.30.3/cmake-3.30.3-linux-x86_64.tar.gz --quiet -O - | tar zxf - --strip-components 1 -C /usr/local
+    dpkg --force-all -r cmake
+    hash -r
+    _CMAKE_ARGS_="${_CMAKE_ARGS_} -DUSE_BUNDLED_FMTLIB=ON -DFMT_INSTALL=OFF"
+    _CMAKE_ARGS_="${_CMAKE_ARGS_} -DCMAKE_CXX_STANDARD=17 -DABSL_DEFS=-DCMAKE_CXX_STANDARD=17" # ik-solver
+    ### ###
+    cd src/abseil_catkin
+    cat - << '_DOC_' | patch -p1
+diff --git a/abseil-cpp/CMakeLists.txt b/abseil-cpp/CMakeLists.txt
+index f4a28df..3ec6ce6 100644
+--- a/abseil-cpp/CMakeLists.txt
++++ b/abseil-cpp/CMakeLists.txt
+@@ -18,7 +18,7 @@ execute_process(COMMAND
+ ExternalProject_Add(
+   absl
+   GIT_REPOSITORY https://github.com/abseil/abseil-cpp
+-  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DABSL_ENABLE_INSTALL=ON -DBUILD_SHARED_LIBS=ON
++  CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=Release -DABSL_ENABLE_INSTALL=ON -DBUILD_SHARED_LIBS=ON ${ABSL_DEFS}
+   GIT_TAG 20240722.1
+   #INSTALL_COMMAND echo "install"
+   )
+_DOC_
+    cd ../..
+else
+    _CMAKE_ARGS_="${_CMAKE_ARGS_} -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
 fi
 #
 if [ "${ROS_DISTRO}" == "noetic" -o "${ROS_DISTRO}" == "one" ]; then

@@ -9,7 +9,7 @@ apt update -q -qq
 apt install -q -qq -y \
    vim-tiny net-tools iputils-ping iproute2 traceroute aptitude \
    graphviz-dev byobu emacs colordiff ethtool mesa-utils meshlab rsync x11-apps \
-   libbullet-extras-dev \
+   libbullet-dev libbullet-extras-dev \
    python3-vcstool python3-venv \
    ros-${ROS_DISTRO}-desktop-full                \
    ros-${ROS_DISTRO}-xacro                       \
