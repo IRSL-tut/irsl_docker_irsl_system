@@ -69,7 +69,7 @@ echo "Build Image: ${TARGET_IMG}"
 
 INPUT_IMAGE=${BASE_IMG} \
            OUTPUT_IMAGE=${TARGET_IMG} \
-           DOCKER_OPT="${DOCKER_OPT} --build-arg XEUS_IMAGE=${XEUS_IMG}" \
+           DOCKER_OPTION="${DOCKER_OPT} --build-arg XEUS_IMAGE=${XEUS_IMG}" \
            ./build_sequential.sh Dockerfile.add_xeus Dockerfile.add_extra_files ${DOCKER_FILE}
 #>set -x
 #>
