@@ -59,10 +59,11 @@ if [ -n ${NO_CACHE} ]; then
 fi
 
 
-DOCKER_FILE=Dockerfile.build_system.merged
+DOCKER_FILES='Dockerfile.add_xeus Dockerfile.add_extra_files Dockerfile.build_system.merged'
 if [ -n "${BUILD_DEVEL}" ]; then
     echo "!!!! !!!! Build Devel !!!! !!!!"
-    DOCKER_FILE=Dockerfile.build_system.devel
+    DOCKER_FILES='docker_files/Dockerfile.build_vision_opencv_numpy2 Dockerfile.add_xeus Dockerfile.add_extra_files Dockerfile.build_system.devel'
+    DOCKER_OPT="${DOCKER_OPT} --build-arg BUILD_DEVEL=yes"
 fi
 
 echo "Build Image: ${TARGET_IMG}"
@@ -70,7 +71,7 @@ echo "Build Image: ${TARGET_IMG}"
 INPUT_IMAGE=${BASE_IMG} \
            OUTPUT_IMAGE=${TARGET_IMG} \
            DOCKER_OPTION="${DOCKER_OPT} --build-arg XEUS_IMAGE=${XEUS_IMG}" \
-           ./build_sequential.sh Dockerfile.add_xeus Dockerfile.add_extra_files ${DOCKER_FILE}
+           ./build_sequential.sh ${DOCKER_FILES}
 #>set -x
 #>
 #>_PID_="$$"

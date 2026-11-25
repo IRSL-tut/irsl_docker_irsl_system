@@ -73,14 +73,14 @@ RUN <<EOF
 if $(echo -e "23.10\n$(lsb_release -s -r)" | sort -C -V); then
     PIP_OPT="--break-system-packages --ignore-installed";
 else
-    python3 -m pip install --upgrade pip;
+    pip install --upgrade pip;
 fi
 _NUMPY_='numpy<2.0'
 if [ -n "${BUILD_DEVEL}" ]; then
    _NUMPY_='numpy' ## may install version 2.0 or higher
 fi
 ## install
-python3 -m pip install $PIP_OPT \
+pip install $PIP_OPT \
 ${_NUMPY_} \
 scipy \
 paramiko scp  \
