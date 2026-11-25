@@ -1,6 +1,70 @@
 
 ARG BASE_IMAGE=repo.irsl.eiiris.tut.ac.jp/irsl_base:opengl_24.04_one
+
+FROM ${BASE_IMAGE} AS builder
+
+RUN <<EOF
+### START
+#_RE_DIRECT_='&> /dev/null'
+set -e
+apt update -q -qq ${_RE_DIRECT_}
+#
+dpkg --force-all -r python3-numpy ${_RE_DIRECT_}
+#
+PIP_URL_=https://bootstrap.pypa.io/get-pip.py
+if   [ "${ROS_DISTRO}" == "noetic" ]; then
+     PIP_URL_=https://bootstrap.pypa.io/pip/3.8/get-pip.py
+fi
+curl -sS  ${PIP_URL_} | python3 - --break-system-packages ${_RE_DIRECT_}
+#
+pip install --break-system-packages numpy scipy opencv-python ${_RE_DIRECT_}
+#
+apt install -q -qq -y python3-numpy ${_RE_DIRECT_}
+apt install -q -qq -y git cmake libopencv-dev libboost-python-dev ${_RE_DIRECT_}
+###
+apt clean ${_RE_DIRECT_}
+rm -rf /var/lib/apt/lists/
+### END
+EOF
+
+WORKDIR /build
+RUN <<EOF
+#_RE_DIRECT_='&> /dev/null'
+set -e
+if   [ "${ROS_DISTRO}" == "noetic" ]; then
+     _TAG_=origin/noetic
+elif [ "${ROS_DISTRO}" == "one" ]; then
+     _TAG_=origin/noetic
+elif [ "${ROS_DISTRO}" == "humble" ]; then
+     _TAG_=origin/humble
+elif [ "${ROS_DISTRO}" == "jazzy" ]; then
+     _TAG_=origin/rolling
+elif [ "${ROS_DISTRO}" == "lyrical" ]; then
+     _TAG_=origin/rolling
+elif [ "${ROS_DISTRO}" == "rolling" ]; then
+     _TAG_=origin/rolling
+fi
+### START
+source /opt/ros/${ROS_DISTRO}/setup.bash
+git clone https://github.com/ros-perception/vision_opencv.git ${_RE_DIRECT_}
+cd vision_opencv/cv_bridge
+git checkout -b build_temp ${_TAG_} ${_RE_DIRECT_}
+mkdir build
+cd build
+cmake .. ${_RE_DIRECT_}
+make -j$(nproc) ${_RE_DIRECT_}
+### build end
+_SRC_=$(find . | grep cv_bridge_boost\.so)
+echo "#### SOURCE #### : $_SRC_"
+cp ${_SRC_} /build
+#
+### END
+EOF
+
+
 FROM ${BASE_IMAGE}
+
+COPY --from=builder /build/cv_bridge_boost.so /tmp
 
 RUN <<EOF
 ### START
@@ -8,31 +72,24 @@ apt update -q -qq
 #
 dpkg --force-all -r python3-numpy
 #
-curl -sS https://bootstrap.pypa.io/get-pip.py | python3 - --break-system-packages
+PIP_URL_=https://bootstrap.pypa.io/get-pip.py
+if   [ "${ROS_DISTRO}" == "noetic" ]; then
+     PIP_URL_=https://bootstrap.pypa.io/pip/3.8/get-pip.py
+fi
+curl -sS  ${PIP_URL_} | python3 - --break-system-packages ${_RE_DIRECT_}
 #
 pip install --break-system-packages numpy scipy opencv-python
 #
 apt install -q -qq -y python3-numpy
-apt install -q -qq -y git cmake libopencv-dev libboost-python-dev
+apt install -q -qq -y git cmake libopencv-dev libboost-python-dev ros-${ROS_DISTRO}-cv-bridge
 ###
 apt clean
 rm -rf /var/lib/apt/lists/
 ### END
-EOF
 
-WORKDIR /build
-RUN <<EOF
-### START
-source /opt/ros/${ROS_DISTRO}/setup.bash
-git clone https://github.com/ros-perception/vision_opencv.git -b noetic
-cd vision_opencv/cv_bridge
-mkdir build
-cd build
-cmake ..
-make
-### END
-EOF
+TARGET=$(find /opt/ros/$ROS_DISTRO/lib | grep cv_bridge_boost\.so)
+echo "#### TARGET #### : $TARGET"
 
-##
-## /build/vision_opencv/cv_bridge/build/devel/lib/python3/dist-packages/cv_bridge/boost/cv_bridge_boost.so
-## copy to /opt/ros/$ROS_DISTRO/lib/python3/dist-packages/cv_bridge/boost/cv_bridge_boost.so
+cp ${TARGET} ${TARGET}.org
+cp /tmp/cv_bridge_boost.so ${TARGET}
+EOF
