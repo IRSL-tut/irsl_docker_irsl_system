@@ -61,10 +61,11 @@ _LOG_FILE_="/tmp/build_log${_PID_}.txt"
 touch ${_LOG_FILE_}
 
 postprocess() {
+    _RES_="$?"
     trap - EXIT
-    echo "############ postprocess $? ############"
+    echo "############ postprocess ${_RES_} ############"
     cat ${_LOG_FILE_}
-    exit $?
+    exit ${_RES_}
 }
 
 trap postprocess EXIT INT TERM
