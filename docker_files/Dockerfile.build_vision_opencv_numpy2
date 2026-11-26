@@ -38,11 +38,11 @@ elif [ "${ROS_DISTRO}" == "one" ]; then
 elif [ "${ROS_DISTRO}" == "humble" ]; then
      _TAG_=origin/humble
 elif [ "${ROS_DISTRO}" == "jazzy" ]; then
-     _TAG_=origin/rolling
+     _TAG_='4.1.0'
 elif [ "${ROS_DISTRO}" == "lyrical" ]; then
-     _TAG_=origin/rolling
+     _TAG_='4.1.0'
 elif [ "${ROS_DISTRO}" == "rolling" ]; then
-     _TAG_=origin/rolling
+     _TAG_='4.1.0'
 fi
 ### START
 source /opt/ros/${ROS_DISTRO}/setup.bash
